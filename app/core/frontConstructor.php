@@ -49,6 +49,8 @@ class FrontConstructor
             $items = [
                 'accueil' => '<li><a href="/">Accueil</a></li>',
                 'login'   => ((!isset($_SESSION['user']) && ($url != 'login' && $url != 'profile')) ? '<li><a href="/login">login</a></li>' : ''),
+                'listpc'   => ((isset($_SESSION['user']) && ($url != 'listpc')) ? '<li><a href="/listpc">List Pc</a></li>' : ''),
+                'listeleves'   => ((isset($_SESSION['user']) && ($url != 'listeleves')) ? '<li><a href="/listeleves">List Élèves</a></li>' : ''),
                 'profile' => ((isset($_SESSION['user']) && $url != 'profile') ? '<li><a href="/profile">Profile</a></li>' : ''),
                 'logout'  => ((isset($_SESSION['user'])) ? '<li><a href="/logout">Déconnexion</a></li>' : ''),
                 'pseudo'  => (isset($_SESSION['user']) && isset($_SESSION['user']['pseudo'])) ? '<li><a>['.$_SESSION['user']['pseudo'].']<a></li>' : ''

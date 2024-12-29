@@ -103,21 +103,30 @@ class CheckDb
      * Fonction pour noter les visites
      */
     private function loginUpdate(){  
-        // $_SESSION['user']['id']
-        $query = "INSERT INTO visites (administrateursid) VALUES (".$_SESSION['user']['id'].")";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
+        if(isset($_SESSION['user']) && isset($_SESSION['user']['id'])){
+            $query = "INSERT INTO visites (administrateursid) VALUES (".$_SESSION['user']['id'].")";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+        }
     }
     /**
-     * Fonction pour login
+     * Fonction pour avoir la liste des Pc
      */
-    public function listPc(){  
-        // $_SESSION['user']['id']
-            $query = "SELECT * FROM pc";
+    public function listPc($cols){  
+            $query = "SELECT ".$cols." FROM pc";
             $stmt = $this->pdo->prepare($query);
-            // $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
             $stmt->execute();
-            $pcs = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $pcs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $pcs;
+    }
+    /**
+     * Fonction pour avoir la liste des Élèves
+     */
+    public function listEleves($cols){  
+            $query = "SELECT ".$cols." FROM eleves";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+            $pcs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             return $pcs;
     }
 }

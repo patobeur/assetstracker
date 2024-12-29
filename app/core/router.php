@@ -5,28 +5,26 @@ class Router
 {
 	private $routes = [];
 	private $CheckDb;
+	private $defaultPage = '';
 
 	public function __construct($CheckDb) {
 		$this->CheckDb = $CheckDb;
 		// Définition des routes
 		$this->routes = [
-			'index'=> 'FrontController@showIndex',
-			'login'=> 'LoginController@handleLogin',
-			'logout'=> 'LoginController@logout',
-			'profile'=> 'ProfileController@showProfile'
+			'index'=> 'FrontController@showIndex@null',
+			'login'=> 'LoginController@handleLogin@db',
+			'logout'=> 'LoginController@logout@null',
+			'profile'=> 'ProfileController@showProfile@null',
+			'listpc'=> 'ListingController@listPc@db',
+			'listeleves'=> 'ListingController@listEleves@db'
 		];
 	}
-	private $defaultPage = '';
 
-	public function add($route, $action)
-	{
-		$this->routes[$route] = $action;
-	}
-
-	public function createPage()
+	public function getdefaultPage()
 	{
 		$this->defaultPage = file_get_contents('../app/views/front.php');
 	}
+
 	public function display()
 	{
 		echo $this->defaultPage;
@@ -37,17 +35,16 @@ class Router
 		if ($url==="") {$url="index";}
 		if (!isset($_SESSION['user'])) {$url="login";}
 
-		$this->createPage();
+		$this->getdefaultPage();
 
 		if (isset($this->routes[$url])) {
 			$action = $this->routes[$url];
-			list($controller, $method) = explode('@', $action);
+			list($controller, $method, $db) = explode('@', $action);
 			
-
 			$controller = "app\\controllers\\$controller";
 
 			if (class_exists($controller) && method_exists($controller, $method)) {
-				$controllerInstance = new $controller($this->CheckDb);
+				$controllerInstance = new $controller($db==="db"?$this->CheckDb:null);
 				return $controllerInstance->$method();
 			} else {
 				
