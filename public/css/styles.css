@@ -1,90 +1,214 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+	font-family: Arial, sans-serif;
+	background-color: #f0f0f0;
+	margin: 0;
+	padding: 0;
+	background: url('../img/login_background_0.webp') no-repeat center center fixed;
+	background-size: cover;
+}
+
+/* Animation du gradient */
+
+        /* Effet doux sur l'écran */
+        .console {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8); /* Ajoute une légère transparence pour adoucir */
+            z-index: -10;
+        }
+
+/* Animation de rotation */
+@keyframes rotateGradient {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes gradientAnimation {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	50% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+/* PAGE */
+/* Styles de base pour les textes */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'Poppins', sans-serif;
+	/* Utilisez une police moderne */
+	color: #2c3e50;
+	/* Couleur sombre élégante */
+	text-align: center;
+	/* Centrer les titres */
+	letter-spacing: 2px;
+	/* Espacement entre les lettres */
+	text-transform: uppercase;
+	/* Transforme le texte en majuscule */
+	margin-bottom: 20px;
+	/* Espacement inférieur */
+}
+
+/* Paragraphe élégant */
+p {
+	font-family: 'Roboto', sans-serif;
+	/* Police lisible et moderne */
+	color: #7f8c8d;
+	/* Couleur grise douce */
+	line-height: 1.6;
+	/* Hauteur de ligne pour un meilleur espacement */
+	font-size: 18px;
+	/* Taille confortable pour la lecture */
+	margin-bottom: 15px;
+	/* Espacement inférieur */
+	text-align: justify;
+	/* Alignement justifié pour un style formel */
+}
+
+/* Style spécial pour les citations */
+blockquote {
+	font-family: 'Georgia', serif;
+	/* Style plus formel pour les citations */
+	font-style: italic;
+	/* Italique pour un effet citation */
+	color: #34495e;
+	/* Couleur élégante */
+	border-left: 5px solid #3498db;
+	/* Barre colorée à gauche */
+	padding: 10px 20px;
+	/* Espacement interne */
+	margin: 20px 0;
+	/* Espacement supérieur et inférieur */
+	background: #ecf0f1;
+	/* Fond doux */
+}
+
+/* Boutons avec style pour interaction */
+button {
+	font-family: 'Poppins', sans-serif;
+	background-color: #3498db;
+	color: #fff;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	text-transform: uppercase;
+	font-size: 14px;
+	transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #2980b9;
+}
+
+/* NAVIGATION */
+nav {
+	position: sticky;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
 }
 
 nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color: #333;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	background-color: #2b2424;
 }
 
 nav ul li {
-    display: inline;
+	display: inline;
 }
 
 nav ul li a {
-    color: white;
-    padding: 14px 20px;
-    text-decoration: none;
-    display: inline-block;
+	color: white;
+	padding: 14px 20px;
+	text-decoration: none;
+	display: inline-block;
 }
 
 nav ul li a:hover {
-    background-color: #111;
+	background-color: #111;
 }
 
 h1 {
-    color: #333;
-    text-align: center;
-    margin-top: 50px;
+	color: #333;
+	text-align: center;
+	margin-top: 50px;
 }
 
 form {
-    max-width: 300px;
-    margin: 0 auto;
-    padding: 1em;
-    background: #fff;
-    border-radius: 3px;
+	max-width: 300px;
+	margin: 0 auto;
+	padding: 1em;
+	background: #fff;
+	border-radius: 3px;
 }
 
 label {
-    margin-bottom: .5em;
-    color: #333;
-    display: block;
+	margin-bottom: .5em;
+	color: #333;
+	display: block;
 }
 
 input[type="text"],
 input[type="password"] {
-    width: 100%;
-    padding: .5em;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-bottom: 1em;
+	width: 100%;
+	padding: .5em;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 1em;
 }
 
 button {
-    width: 100%;
-    padding: 0.7em;
-    border: none;
-    border-radius: 3px;
-    background-color: #333;
-    color: white;
-    font-size: 1em;
+	width: 100%;
+	padding: 0.7em;
+	border: none;
+	border-radius: 3px;
+	background-color: #333;
+	color: white;
+	font-size: 1em;
 }
 
 .error {
-    color: red;
-    text-align: center;
-    margin-bottom: 1em;
+	color: red;
+	text-align: center;
+	margin-bottom: 1em;
 }
 
 table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: collapse;
+	width: 80%;
+	margin: 20px auto;
+	border-collapse: collapse;
 }
 
-table th, table td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ccc;
+table th,
+table td {
+	padding: 10px;
+	text-align: left;
+	border: 1px solid #ccc;
 }
 
 table th {
-    background-color: #333;
-    color: white;
+	background-color: #333;
+	color: white;
 }

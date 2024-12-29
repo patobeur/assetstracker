@@ -1,27 +1,15 @@
 <?php
 
-    namespace app\controllers;
+	namespace app\controllers;
 
-    class FrontController
-    {
-        public function showIndex()
-        {
-            $content = [
-                'TITLE' => "Accueil title",
-                'CONTENT'   => "Page Accueil"
-            ];
-
-
-
-
-
-
-
-
-
-
-
-            return $content;
-        }
-
-    }
+	class FrontController
+	{
+		public function showIndex()
+		{
+			$content = [
+				'TITLE' => "Accueil title",
+				'CONTENT'   => "<h1>Accueil</h1>"
+			];
+			return $content;
+		}
+	}

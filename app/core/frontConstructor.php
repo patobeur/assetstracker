@@ -39,25 +39,30 @@ class FrontConstructor
 
     public function addNavigation($url)
     {
-        // menu vue
-        $navigationVue = '<nav><ul>#CONTENTS#</ul></nav>';
-        // items
-        $items = [
-            'accueil' => '<li><a href="/">Accueil</a></li>',
-            'login'   => ((!isset($_SESSION['user']) && ($url != 'login' && $url != 'profile')) ? '<li><a href="/login">login</a></li>' : ''),
-            'profile' => ((isset($_SESSION['user']) && $url != 'profile') ? '<li><a href="profile.php">Profile</a></li>' : ''),
-            'logout'  => ((isset($_SESSION['user'])) ? '<li><a href="/logout">Déconnexion</a></li>' : ''),
-            'pseudo'  => (isset($_SESSION['user'])) ? '<li><a>['.$_SESSION['user'].']<a></li>' : ''
-        ];
-    
-        $menuItems = '';
-    
-        foreach ($items as $key => $value) {
-            $menuItems .= $value;
-        }
+        if(!isset($_SESSION['user'])) {
+            $this->defaultPage = str_replace("#NAVIGATION#",'',$this->defaultPage);
+
+        } else {
+            // menu vue
+            $navigationVue = '<nav><ul>#CONTENTS#</ul></nav>...';
+            // items
+            $items = [
+                'accueil' => '<li><a href="/">Accueil</a></li>',
+                'login'   => ((!isset($_SESSION['user']) && ($url != 'login' && $url != 'profile')) ? '<li><a href="/login">login</a></li>' : ''),
+                'profile' => ((isset($_SESSION['user']) && $url != 'profile') ? '<li><a href="/profile">Profile</a></li>' : ''),
+                'logout'  => ((isset($_SESSION['user'])) ? '<li><a href="/logout">Déconnexion</a></li>' : ''),
+                'pseudo'  => (isset($_SESSION['user']) && isset($_SESSION['user']['pseudo'])) ? '<li><a>['.$_SESSION['user']['pseudo'].']<a></li>' : ''
+            ];
         
-        $navigationVue = str_replace("#CONTENTS#",$menuItems,$navigationVue);
-        $this->defaultPage = str_replace("#NAVIGATION#",$navigationVue,$this->defaultPage);
+            $menuItems = '';
+        
+            foreach ($items as $key => $value) {
+                $menuItems .= $value;
+            }
+            
+            $navigationVue = str_replace("#CONTENTS#",$menuItems,$navigationVue);
+            $this->defaultPage = str_replace("#NAVIGATION#",$navigationVue,$this->defaultPage);
+        }
     }
 
 

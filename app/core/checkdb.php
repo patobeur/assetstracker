@@ -5,6 +5,7 @@ class CheckDb
 {
     private $dbConfigPath = '../app/conf/dbconfig.php';
     private $installPath = '../public/install.php';
+    private $pdo;
 
     public function __construct() {
         $configFile = file_exists($this->dbConfigPath);
@@ -12,8 +13,9 @@ class CheckDb
 
 
         if (!$configFile && $installFile) {
-            echo("go install<br/>");
+            // echo("go install<br/>");
             header('Location: install.php'); // Redirige vers la l'installation
+            exit;
         }
         elseif ($configFile && !$installFile) {
             $this->check();
@@ -23,27 +25,30 @@ class CheckDb
         }
     }
 
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
     public function check()
     {
-        require($this->dbConfigPath);
+        require_once($this->dbConfigPath);
 
         if (!empty($dbHost) && !empty($dbName) && !empty($dbUser)) {
             try {
                 // Créer une connexion PDO
                 $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=utf8";
-                $pdo = new \PDO($dsn, $dbUser, $dbPassword);
+                $this->pdo = new \PDO($dsn, $dbUser, $dbPassword);
 
-                if (PROD) {
-                    // en prod
-                    $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
+                if (PROD) { // en prod
+                    $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
                 }
-                else {
-                    // en dev
-                    $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+                else { // en dev
+                    $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
                 }
 
                 // Vérifier si la table assetstracker existe
-                $query = $pdo->query("SHOW TABLES LIKE 'administrateurs'");
+                $query = $this->pdo->query("SHOW TABLES LIKE 'administrateurs'");
                 if ($query->rowCount() == 0) {
                     $dberror="La table 'administrateurs' n'existe pas dans la base de données.";
                     // header('Location: /');
