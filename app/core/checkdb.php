@@ -68,5 +68,36 @@ class CheckDb
     function deleteFile(){
         unlink(__FILE__);
     }
+    /**
+     * Fonction pour login
+     */
+    function login($username=null,$password=null){  
+        $username = trim($username);
+        $password = trim($password);  
+        if (empty($username) || empty($password)) {
+            $errors[] = "Tous les champs doivent être remplis.";
+        }
+        if (empty($errors)) {
+            $query = "SELECT * FROM administrateurs WHERE pseudo = :username LIMIT 1";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
+            $stmt->execute();
+            $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($admin && password_verify($password, $admin['motdepasse'])) {
+                // Authentification réussie
+                $_SESSION['user'] = [
+                    'id' => $admin['id'],
+                    'pseudo' => $admin['pseudo'],
+                    'nom' => $admin['nom'],
+                    'prenom' => $admin['prenom']
+                ];
+                header("Location: /");
+                exit;
+            } else {
+                $errors[] = "Pseudo ou mot de passe incorrect.";
+            }
+        }
+        return $errors;
+    }
 
 }
