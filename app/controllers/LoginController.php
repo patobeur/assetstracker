@@ -5,9 +5,11 @@
         private $pdo;
         private $CheckDb;
     
-        public function __construct($CheckDb) {
-            $this->CheckDb=$CheckDb;
-            $this->pdo=$this->CheckDb->getPdo();
+        public function __construct($CheckDb=false) {
+            if($CheckDb){
+                $this->CheckDb=$CheckDb;
+                $this->pdo = $this->CheckDb->getPdo();
+            }
         }
         
         // Gérer le traitement de connexion
