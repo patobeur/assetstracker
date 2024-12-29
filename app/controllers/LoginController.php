@@ -18,11 +18,12 @@
                 $password = $_POST['password'] ?? null;
                 $username = trim($username);
                 $password = trim($password);
-                // Validation des champs
-                if (empty($username) || empty($password)) {
+                
+                if (!empty($username) && !empty($password)) {
                     $errors=$this->CheckDb->login($username,$password);
                 }
             }
+            
             return $this->renderView($errors);
         }
     
@@ -32,6 +33,7 @@
     
             // Ajouter les erreurs
             $errorHtml = '';
+            
             if (!empty($errors)) {
                 foreach ($errors as $error) {
                     $errorHtml .= "<p class='error'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</p>";

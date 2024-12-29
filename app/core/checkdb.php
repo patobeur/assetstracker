@@ -62,12 +62,7 @@ class CheckDb
             // header('Location: /');
         }
     }
-    /**
-     * Fonction pour supprimer le fichier install.php
-     */
-    function deleteFile(){
-        unlink(__FILE__);
-    }
+
     /**
      * Fonction pour login
      */
@@ -78,6 +73,7 @@ class CheckDb
             $errors[] = "Tous les champs doivent être remplis.";
         }
         if (empty($errors)) {
+            
             $query = "SELECT * FROM administrateurs WHERE pseudo = :username LIMIT 1";
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
@@ -88,9 +84,12 @@ class CheckDb
                 $_SESSION['user'] = [
                     'id' => $admin['id'],
                     'pseudo' => $admin['pseudo'],
-                    'nom' => $admin['nom'],
-                    'prenom' => $admin['prenom']
+                    // 'nom' => $admin['nom'],
+                    // 'prenom' => $admin['prenom']
                 ];
+
+                $this->loginUpdate();
+
                 header("Location: /");
                 exit;
             } else {
@@ -100,4 +99,25 @@ class CheckDb
         return $errors;
     }
 
+    /**
+     * Fonction pour noter les visites
+     */
+    private function loginUpdate(){  
+        // $_SESSION['user']['id']
+        $query = "INSERT INTO visites (administrateursid) VALUES (".$_SESSION['user']['id'].")";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+    }
+    /**
+     * Fonction pour login
+     */
+    public function listPc(){  
+        // $_SESSION['user']['id']
+            $query = "SELECT * FROM pc";
+            $stmt = $this->pdo->prepare($query);
+            // $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
+            $stmt->execute();
+            $pcs = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $pcs;
+    }
 }
