@@ -29,8 +29,7 @@
 			}
 			$theaders .= "/<tr>";
 
-			$sqlList = implode(",", $sqlList);
-			$items = $this->CheckDb->listPc($sqlList);
+			$items = $this->CheckDb->list('pc',implode(",", $sqlList));
 
 			foreach ($items as $item) {
 					$content .= "<tr>";
@@ -52,9 +51,7 @@
 		// Gérer le traitement de connexion
 		public function listEleves() {
 			$html = file_get_contents('../app/views/listes.php');
-			$content = '';
-			$items = $this->CheckDb->listEleves('id,barrecode,nom,prenom,promo,classe,idaccount,birth,mail');
-			
+			$content = '';			
 			
 			$content = '';
 			$sqlList = [];
@@ -65,7 +62,6 @@
 				"prenom" => 'prenom',
 				"promo" => 'promo',
 				"classe" => 'classe',
-				"idaccount" => 'idaccount',
 				"birth" => 'birth',
 				"mail" => 'mail',
 			];
@@ -77,8 +73,7 @@
 			}
 			$theaders .= "/<tr>";
 
-			$sqlList = implode(",", $sqlList);
-			$items = $this->CheckDb->listEleves($sqlList);
+			$items = $this->CheckDb->list('eleves',implode(",", $sqlList));
 
 			foreach ($items as $item) {
 					$content .= "<tr>";

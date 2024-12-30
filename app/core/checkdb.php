@@ -8,6 +8,9 @@ class CheckDb
     private $pdo;
 
     public function __construct() {
+        
+        if(!isset($_SESSION['errors'])){$_SESSION['errors'] = [];}
+
         $configFile = file_exists($this->dbConfigPath);
         $installFile = file_exists($this->installPath);
 
@@ -21,7 +24,9 @@ class CheckDb
             $this->check();
         }
         elseif ($configFile && $installFile) {
-            echo("dbconfig.php et install.php ne devraient pas exister en même temps ??<br/>");
+            echo("dbconfig.php et install.php ne devraient pas exister en même temps ??");
+            $_SESSION['errors'][]="dbconfig.php et install.php ne devraient pas exister en même temps ??";
+            die();
         }
     }
 
@@ -112,21 +117,14 @@ class CheckDb
     /**
      * Fonction pour avoir la liste des Pc
      */
-    public function listPc($cols){  
-            $query = "SELECT ".$cols." FROM pc";
+    public function list($table=null,$cols){  
+        if($table){
+            $query = "SELECT ".$cols." FROM ".$table;
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
             $pcs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             return $pcs;
-    }
-    /**
-     * Fonction pour avoir la liste des Élèves
-     */
-    public function listEleves($cols){  
-            $query = "SELECT ".$cols." FROM eleves";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute();
-            $pcs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            return $pcs;
+        }
+        return null;
     }
 }

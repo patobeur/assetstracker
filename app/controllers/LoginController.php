@@ -16,10 +16,13 @@
         public function handleLogin() {
             $errors = [];
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $username = $_POST['username'] ?? null;
-                $password = $_POST['password'] ?? null;
-                $username = trim($username);
-                $password = trim($password);
+
+                // Récupération et validation des données d'entrée
+                $username = isset($_POST['username']) ? trim($_POST['username']) : '';
+                $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+                // Valider le nom d'utilisateur pour éviter des caractères non valides
+                $username = filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                 
                 if (!empty($username) && !empty($password)) {
                     $errors=$this->CheckDb->login($username,$password);

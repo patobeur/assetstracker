@@ -7,12 +7,6 @@
     $defaultUser = 'root';
     $defaultDb = 'assetstracker';
 
-    // liste des administrateurs/trices à ajouter dans la table admins
-    // myObj[n] = [pseudo, nom, password_hash(mot de passe), mail]
-    $myObj = array();
-    $myObj[0] = ["alice", "Alice", password_hash('passwordAlice', PASSWORD_DEFAULT), "alice@example.com"];
-    $myObj[1] = ["bob", "Bob", password_hash('passwordBob', PASSWORD_DEFAULT), "bob@example.com"];
-    $myObj[2] = ["pat", "Pat", password_hash("passwordPat", PASSWORD_DEFAULT), "pat@example.com"];
 
     if (file_exists($dbConfigPath)) {
         deleteFile(); // Supprime ce script
@@ -23,15 +17,12 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
-        $dbHost = $_POST['host'] ?? '';
-        $dbName = $_POST['db'] ?? '';
-        $dbUser = $_POST['user'] ?? '';
+        $dbHost = trim($_POST['host'] ?? '');
+        $dbName = trim($_POST['db'] ?? '');
+        $dbUser = trim($_POST['user'] ?? '');
         $dbPassword = $_POST['pass'] ?? '';
-
-        $dbHost = filter_var($_POST['host'], FILTER_SANITIZE_STRING);
-        $dbName = filter_var($_POST['db'], FILTER_SANITIZE_STRING);
-        $dbUser = filter_var($_POST['user'], FILTER_SANITIZE_STRING);
-        $dbPassword = filter_var($_POST['pass'], FILTER_SANITIZE_STRING);
+        
+        $dbHost = filter_var($dbHost, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         if (!filter_var($dbHost, FILTER_VALIDATE_DOMAIN)) {
             die("Hôte invalide");
@@ -52,26 +43,37 @@
 
                 // Création des tables
                 $queries = [
-                    "CREATE TABLE IF NOT EXISTS eleves (
+                    "CREATE TABLE IF NOT EXISTS typeassets (
                         id INT AUTO_INCREMENT PRIMARY KEY,
-                        barrecode VARCHAR(50),
-                        nom VARCHAR(100),
-                        prenom VARCHAR(100),
-                        promo VARCHAR(50),
-                        classe VARCHAR(50),
-                        idaccount INT DEFAULT 0,
-                        birth TIMESTAMP,
-                        mail VARCHAR(255)
+                        content VARCHAR(100)
                     )",
+                    "INSERT INTO typeassets (content) VALUES 
+                        ('Ordinateur portable'),
+                        ('Chargeur')",
+                    "CREATE TABLE IF NOT EXISTS typeaccounts (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        content VARCHAR(100)
+                    )",
+                    "INSERT INTO typeaccounts  (id, content) VALUES 
+                        (1, 'master'),
+                        (2, 'supermaster')",
+
+
+
+
                     "CREATE TABLE IF NOT EXISTS administrateurs (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         pseudo VARCHAR(100) NOT NULL UNIQUE,
                         motdepasse VARCHAR(255) NOT NULL,
                         nom VARCHAR(100),
                         prenom VARCHAR(100),
-                        idaccount INT DEFAULT 9,
                         birth TIMESTAMP,
-                        mail VARCHAR(255)
+                        mail VARCHAR(255),
+                        typeaccount_id INT,
+                        FOREIGN KEY (typeaccount_id) REFERENCES typeaccounts(id) ON DELETE CASCADE ON UPDATE CASCADE
+                    )",
+                    "INSERT INTO administrateurs (pseudo, motdepasse, nom, prenom, mail, typeaccount_id) VALUES 
+                        ('pat', '".password_hash("passwordPat", PASSWORD_DEFAULT)."', 'Pat', 'PatAdmin', 'pat@example.com', 1 
                     )",
                     "CREATE TABLE IF NOT EXISTS pc (
                         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,59 +81,60 @@
                         model VARCHAR(100),
                         serialnum VARCHAR(100),
                         birth TIMESTAMP,
-                        etat VARCHAR(50)
+                        etat VARCHAR(50),
+                        typeasset_id INT,
+                        FOREIGN KEY (typeasset_id) REFERENCES typeassets(id) ON DELETE CASCADE ON UPDATE CASCADE
                     )",
+
+                    "INSERT INTO pc (barrecode, model, serialnum, etat, typeasset_id) VALUES
+                        ('10000001', 'Dell Inspiron', 'SN12345', 'Disponible', 1),
+                        ('10000001', 'HP EliteBook', 'SN67890', 'En réparation', 1)",
+
+
+                    "CREATE TABLE IF NOT EXISTS eleves (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        barrecode VARCHAR(50),
+                        nom VARCHAR(100),
+                        prenom VARCHAR(100),
+                        promo VARCHAR(50),
+                        classe VARCHAR(50),
+                        birth TIMESTAMP,
+                        mail VARCHAR(255)
+                    )",
+                    "INSERT INTO eleves (barrecode, nom, prenom, promo, classe, mail) VALUES
+                        ('00000001', 'Doe', 'John', '2426', 'BTSCOM', 'john.doe@example.com'),
+                        ('00000011', 'Smith', 'Jane', '2426', 'COM2325', 'jane.smith@example.com')",
+
+
+
+
                     "CREATE TABLE IF NOT EXISTS timeline (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         birth TIMESTAMP,
+                        typeaction VARCHAR(50),
                         ideleves INT,
-                        idpc INT
+                        idpc INT,
+                        FOREIGN KEY (ideleves) REFERENCES eleves(id) ON DELETE CASCADE ON UPDATE CASCADE,
+                        FOREIGN KEY (idpc) REFERENCES pc(id) ON DELETE CASCADE ON UPDATE CASCADE
                     )",
+
+                        
+
+
+                    "INSERT INTO timeline (ideleves, idpc, typeaction) VALUES (1,1,'out'),(1,2,'in')",
+
+
                     "CREATE TABLE IF NOT EXISTS visites (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         datetime TIMESTAMP,
-                        administrateursid INT
+                        administrateurs_id INT,
+                        FOREIGN KEY (administrateurs_id) REFERENCES administrateurs(id) ON DELETE CASCADE ON UPDATE CASCADE
                     )",
-                    "CREATE TABLE IF NOT EXISTS typeassets (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        typeasset VARCHAR(100)
-                    )",
-                    "CREATE TABLE IF NOT EXISTS typeaccounts (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        typeaccount VARCHAR(100)
-                    )"
                 ];
 
                 foreach ($queries as $query) {
                     $pdo->exec($query);
                 }
-                
-
-                // Ajout des administrateurs 0 et 1 avec pseudo et mot de passe
-                $insertAdmins = [
-                    "INSERT INTO administrateurs (pseudo, motdepasse, nom, prenom, idaccount, birth, mail) VALUES 
-                        ('{$myObj[0][0]}', '{$myObj[0][2]}', '{$myObj[0][1]}', 'Admin', 9, NOW(), '{$myObj[0][3]}')",
-                    "INSERT INTO administrateurs (pseudo, motdepasse, nom, prenom, idaccount, birth, mail) VALUES 
-                        ('{$myObj[1][0]}', '{$myObj[1][2]}', '{$myObj[1][1]}', 'Admin', 9, NOW(), '{$myObj[1][3]}')"
-                ];
-
-                foreach ($insertAdmins as $query) {
-                    $pdo->exec($query);
-                }
-
-                // Insertion des données par défaut
-                $pdo->exec("
-
-                    INSERT INTO eleves (barrecode, nom, prenom, classe) VALUES
-                    ('00000001', 'Doe', 'John', 'COM2426'),
-                    ('00000011', 'Smith', 'Jane', 'COM2325');
-
-                    INSERT INTO pc (barrecode, model, serialnum, etat) VALUES
-                    ('10000001', 'Dell Inspiron', 'SN12345', 'Disponible'),
-                    ('10000001', 'HP EliteBook', 'SN67890', 'En réparation');
-
-                    INSERT INTO timeline (ideleves, idpc) VALUES (1,1),(1,2);
-                ");
 
                 // Création du fichier dbconfig.php
                 $configContent = <<<PHP
