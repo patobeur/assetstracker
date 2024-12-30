@@ -16,7 +16,8 @@ class Router
 			'logout'=> 'LoginController@logout@null',
 			'profile'=> 'ProfileController@showProfile@null',
 			'listpc'=> 'ListingController@listPc@db',
-			'listeleves'=> 'ListingController@listEleves@db'
+			'listeleves'=> 'ListingController@listEleves@db',
+			'timeline'=> 'ListingController@listTimeline@db'
 		];
 	}
 
