@@ -18,7 +18,7 @@
             if (!isset($_SESSION['user'])) {
                 header('Location: /login');
             } else {             
-                $this->content['CONTENT'] = str_replace("#CONTENT#","<h3>".$_SESSION['user']['pseudo']."<h3>",$this->content['VUE']);
+                $this->content['CONTENT'] = str_replace("{{CONTENT}}","<h3>".$_SESSION['user']['pseudo']."<h3>",$this->content['VUE']);
                 return $this->content;
             }
         }

@@ -17,11 +17,12 @@ class Router
 			'profile'=> 'ProfileController@showProfile@null',
 			'listpc'=> 'ListingController@listPc@db',
 			'listeleves'=> 'ListingController@listEleves@db',
-			'timeline'=> 'ListingController@listTimeline@db'
+			'timeline'=> 'ListingController@listTimeline@db',
+			'out'=> 'InOutController@handleOut@db'
 		];
 	}
 
-	public function getdefaultPage()
+	public function setdefaultPage()
 	{
 		$this->defaultPage = file_get_contents('../app/views/front.php');
 	}
@@ -31,12 +32,12 @@ class Router
 		echo $this->defaultPage;
 	}
 
-	public function dispatch($url)
+	public function dispatch($url="")
 	{
 		if ($url==="") {$url="index";}
 		if (!isset($_SESSION['user'])) {$url="login";}
 
-		$this->getdefaultPage();
+		$this->setdefaultPage();
 
 		if (isset($this->routes[$url])) {
 			$action = $this->routes[$url];

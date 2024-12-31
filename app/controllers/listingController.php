@@ -40,8 +40,8 @@
 			}
 			
             $html = str_replace('#PAGETITLE#', 'Liste des Pc', $html);
-            $html = str_replace('#TITLES#', $theaders, $html);
-            $html = str_replace('#CONTENT#', $content, $html);
+            $html = str_replace('{{TITLES}}', $theaders, $html);
+            $html = str_replace('{{CONTENT}}', $content, $html);
 
 			return [
 				'CONTENT'=> $html,
@@ -84,8 +84,8 @@
 			}
 			
             $html = str_replace('#PAGETITLE#', 'Liste des Élèves', $html);
-            $html = str_replace('#TITLES#', $theaders, $html);
-            $html = str_replace('#CONTENT#', $content, $html);
+            $html = str_replace('{{TITLES}}', $theaders, $html);
+            $html = str_replace('{{CONTENT}}', $content, $html);
 			
 			return [
 				'CONTENT'=> $html,
@@ -125,8 +125,8 @@
 			}
 			
             $html = str_replace('#PAGETITLE#', 'Timeline', $html);
-            $html = str_replace('#TITLES#', $theaders, $html);
-            $html = str_replace('#CONTENT#', $content, $html);
+            $html = str_replace('{{TITLES}}', $theaders, $html);
+            $html = str_replace('{{CONTENT}}', $content, $html);
 
 			return [
 				'CONTENT'=> $html,

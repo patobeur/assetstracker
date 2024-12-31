@@ -17,4 +17,6 @@
 	$url = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
 	$content = $router->dispatch($url,$CheckDb);
-	$frontConstructor->displayPage($url,[$content]);
+	$pageToDisplay = $frontConstructor->getPageToDisplay($url,[$content]);
+	
+	echo $pageToDisplay;

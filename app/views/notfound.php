@@ -1,2 +1,2 @@
-<h1>404 - Not Found</h1>
-#CONTENT#
+not fouuu<h1>{{TITLES}}</h1>
+{{CONTENT}}
