@@ -57,9 +57,9 @@ class FrontConstructor
 			'listpc'   => ((isset($_SESSION['user']) && ($url != 'listpc')) ? '<li><a href="/listpc">List Pc</a></li>' : ''),
 			'listeleves'   => ((isset($_SESSION['user']) && ($url != 'listeleves')) ? '<li><a href="/listeleves">List Élèves</a></li>' : ''),
 			'timeline'   => ((isset($_SESSION['user']) && ($url != 'timeline')) ? '<li><a href="/timeline">Timeline</a></li>' : ''),
-			'profile' => ((isset($_SESSION['user']) && $url != 'profile') ? '<li><a href="/profile">Profile</a></li>' : ''),
-			'logout'  => ((isset($_SESSION['user'])) ? '<li><a href="/logout">Déconnexion</a></li>' : ''),
-			'pseudo'  => (isset($_SESSION['user']) && isset($_SESSION['user']['pseudo'])) ? '<li><a>['.$_SESSION['user']['pseudo'].']<a></li>' : ''
+			// 'profile' => ((isset($_SESSION['user']) && $url != 'profile') ? '<li><a href="/profile">Profile</a></li>' : ''),
+			'logout'  => ((isset($_SESSION['user'])) ? '<li class="deco" ><a class="deco" href="/logout">Déconnexion</a></li>' : ''),
+			// 'pseudo'  => (isset($_SESSION['user']) && isset($_SESSION['user']['pseudo'])) ? '<li><a>['.$_SESSION['user']['pseudo'].']</a></li>' : ''
 		];
 	
 		$menuItems = '';

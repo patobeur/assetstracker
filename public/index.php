@@ -1,6 +1,11 @@
 <?php
 	session_start();
 	
+	define('WEBSITE', [
+		'header' => 'Content-type: text/html; charset=UTF-8',
+		'siteurl' => 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF'])
+	]);
+
 	define('PROD',0); // 0 en dev, 1 en prod
 
 	require_once '../app/core/autoloader.php';
@@ -19,4 +24,7 @@
 	$content = $router->dispatch($url,$CheckDb);
 	$pageToDisplay = $frontConstructor->getPageToDisplay($url,[$content]);
 	
+	if (!headers_sent()) {
+		header(WEBSITE['header']);
+	}
 	echo $pageToDisplay;

@@ -7,6 +7,14 @@
     $defaultUser = 'root';
     $defaultDb = 'assetstracker';
 
+    $defaultAdminPseudo = 'admin';
+    $defaultAdminPasse = '';
+
+    $defaultAdminMail = 'admin@example.com';
+    $defaultAdminPrenom = 'admin';
+    $defaultAdminNom = 'admin';
+    $defaultAdminTypeaccount = 1;
+
 
     if (file_exists($dbConfigPath)) {
         deleteFile(); // Supprime ce script
@@ -21,6 +29,8 @@
         $dbName = trim($_POST['db'] ?? '');
         $dbUser = trim($_POST['user'] ?? '');
         $dbPassword = $_POST['pass'] ?? '';
+        $defaultAdminPseudo = trim($_POST['adminpseudo'] ?? '');
+        $defaultAdminPasse = $_POST['adminpass'] ?? '';
         
         $dbHost = filter_var($dbHost, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -28,7 +38,7 @@
             die("Hôte invalide");
         }
 
-        if (empty($dbHost) || empty($dbName) || empty($dbUser)) {
+        if (empty($dbHost) || empty($dbName) || empty($dbUser) || empty($defaultAdminPseudo) || empty($defaultAdminPasse)) {
             $error = "Veuillez remplir tous les champs.";
         } else {
             try {
@@ -73,8 +83,13 @@
                         FOREIGN KEY (typeaccount_id) REFERENCES typeaccounts(id) ON DELETE CASCADE ON UPDATE CASCADE
                     )",
                     "INSERT INTO administrateurs (pseudo, motdepasse, nom, prenom, mail, typeaccount_id) VALUES 
-                        ('pat', '".password_hash("passwordPat", PASSWORD_DEFAULT)."', 'Pat', 'PatAdmin', 'pat@example.com', 1 
-                    )",
+                        ('".
+                        $defaultAdminPseudo."', '".
+                        password_hash($defaultAdminPasse, PASSWORD_DEFAULT)."', '".
+                        $defaultAdminNom."', '".
+                        $defaultAdminPrenom."', '".
+                        $defaultAdminMail."', '".
+                        $defaultAdminTypeaccount."')",
                     "CREATE TABLE IF NOT EXISTS pc (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         barrecode VARCHAR(50),
@@ -185,26 +200,42 @@ PHP;
                 background: url('img/login_background_1.webp') no-repeat center center fixed;
                 background-size: cover;
                 color: #333;
-                margin: 0;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 100vh;
         }
 
         .container {
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            padding: 20px;
-            text-align: center;
+            width: 350px;
+            background-color:rgb(236, 236, 236);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            padding: 10px;
+                display: flex;
+                flex-direction: column;
         }
-
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .blocs {
+            padding: 5px;
+            padding-top: 20px;
+        }
+        .blocs.center {
+            display: flex;
+            justify-content: center;
+        }
         h1 {
             font-size: 24px;
             color: #555;
-            margin-bottom: 20px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+        p {
+            text-align: center;
         }
 
         .error {
@@ -213,11 +244,6 @@ PHP;
             margin-bottom: 15px;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
 
         label {
             font-weight: bold;
@@ -248,8 +274,11 @@ PHP;
         .input-container .icon {
             position: absolute;
             left: 10px;
-            color: #999;
-            font-size: 16px;
+            color:rgb(77, 77, 77);
+            font-size: 18px;
+        }
+        .input-container:hover .icon {
+            color:rgb(7, 77, 5);
         }
 
         button {
@@ -260,6 +289,7 @@ PHP;
             border-radius: 4px;
             font-size: 16px;
             cursor: pointer;
+            width: fit-content;
             transition: background-color 0.3s ease;
         }
 
@@ -275,44 +305,59 @@ PHP;
             <p class="error"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
         <form method="post">
-            <label for="host">Hôte :</label>
-            <div class="input-container">
-                <i class="fa fa-server icon"></i>
-                <input type="text" id="host" name="host" required value="<?php echo $defaultHost; ?>">
-            </div>
+            <div class="blocs">
+                <label for="host">Hôte :</label>
+                <div class="input-container">
+                    <i class="fa fa-server icon"></i>
+                    <input type="text" id="host" name="host" required value="<?php echo $defaultHost; ?>">
+                </div>
 
-            <label for="db">Nom de la base de données :</label>
-            <div class="input-container">
-                <i class="fa fa-database icon"></i>
-                <input type="text" id="db" name="db" required value="<?php echo $defaultDb; ?>">
-            </div>
+                <label for="db">Nom de la base de données :</label>
+                <div class="input-container">
+                    <i class="fa fa-database icon"></i>
+                    <input type="text" id="db" name="db" required value="<?php echo $defaultDb; ?>">
+                </div>
 
-            <label for="user">Utilisateur :</label>
-            <div class="input-container">
-                <i class="fa fa-user icon"></i>
-                <input type="text" id="user" name="user" required value="<?php echo $defaultUser; ?>">
-            </div>
+                <label for="user">Utilisateur :</label>
+                <div class="input-container">
+                    <i class="fa fa-user icon"></i>
+                    <input type="text" id="user" name="user" required value="<?php echo $defaultUser; ?>">
+                </div>
 
-            <label for="pass">Mot de passe :</label>
-            <div class="input-container">
-                <i class="fa fa-lock icon"></i>
-                <input type="password" id="pass" name="pass" style="padding-right: 30px;">
-                <span id="togglePass" style="
-                    position: absolute;
-                    top: 50%;
-                    right: 10px;
-                    transform: translateY(-50%);
-                    cursor: pointer;
-                    color: #999;
-                ">&#128065;</span>
+                <label for="pass">Mot de passe :</label>
+                <div class="input-container">
+                    <i class="fa fa-lock icon"></i>
+                    <input type="password" id="pass" name="pass" style="padding-right: 30px;">
+                    <span id="togglePass" style="
+                        position: absolute;
+                        top: 50%;
+                        right: 10px;
+                        transform: translateY(-50%);
+                        cursor: pointer;
+                        color: #999;
+                    ">&#128065;</span>
+                </div>
             </div>
-
-            <button type="submit">Installer</button>
+            <div class="blocs">
+                <label for="user">Pseudo Admin :</label>
+                <div class="input-container"><i class="fa fa-user icon"></i><input type="text" id="adminpseudo" name="adminpseudo" required value="<?php echo $defaultAdminPseudo; ?>"></div>
+                <label for="pass">Mot de passe Admin :</label>
+                <div class="input-container">
+                    <i class="fa fa-lock icon"></i>
+                    <input type="password" id="adminpass" name="adminpass" style="padding-right: 30px;">
+                    <span id="toggleAdminPass" style="position: absolute;top: 50%;right: 10px;transform: translateY(-50%);cursor: pointer;color: #999;">&#128065;</span>
+                </div>
+            </div>
+            <div class="blocs center">
+                <button type="submit">Installer</button>
+            </div>
         </form>
     </div>
     <script>
         const passwordField = document.getElementById('pass');
         const togglePass = document.getElementById('togglePass');
+        const passwordAField = document.getElementById('adminpass');
+        const toggleAdminPass = document.getElementById('toggleAdminPass');
 
         togglePass.addEventListener('click', () => {
             if (passwordField.type === 'password') {
@@ -321,6 +366,15 @@ PHP;
             } else {
                 passwordField.type = 'password';
                 togglePass.innerHTML = '&#128065;';
+            }
+        });
+        toggleAdminPass.addEventListener('click', () => {
+            if (passwordAField.type === 'password') {
+                passwordAField.type = 'text';
+                toggleAdminPass.innerHTML = '&#128064;';
+            } else {
+                passwordAField.type = 'password';
+                toggleAdminPass.innerHTML = '&#128065;';
             }
         });
     </script>

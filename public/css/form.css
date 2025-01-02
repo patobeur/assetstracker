@@ -1,0 +1,44 @@
+form {
+	max-width: 300px;
+	margin: 0 auto;
+	padding: 1em;
+	background: #fff;
+	border-radius: 3px;
+}
+
+label {
+	margin-bottom: .5em;
+	color: #333;
+	display: block;
+}
+
+input[type="text"],
+input[type="password"] {
+	width: 100%;
+	padding: .5em;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-bottom: 1em;
+}
+
+.error {
+	color: red;
+	text-align: center;
+	margin-bottom: 1em;
+}
+button {
+	font-family: 'Poppins', sans-serif;
+	background-color: #3498db;
+	color: #fff;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	text-transform: uppercase;
+	font-size: 14px;
+	transition: background-color 0.3s;
+}
+
+button:hover {
+	background-color: #2980b9;
+}
