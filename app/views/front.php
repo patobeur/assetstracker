@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="/css/styles.css">
 	<link rel="stylesheet" href="/css/nav.css">
 	<link rel="stylesheet" href="/css/form.css">
+	<link rel="stylesheet" href="/css/console.css">
 </head>
 
 <body class="night">

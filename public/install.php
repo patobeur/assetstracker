@@ -1,9 +1,10 @@
 <?php
+
 	session_start();
 	define('PROD',0); // 0 en dev, 1 en prod
 	
 	$dbConfigPath = '../app/conf/dbconfig.php';
-	$defaultHost = '';
+	$defaultHost = 'localhost';
 	$defaultUser = '';
 	$defaultDb = '';
 
@@ -84,10 +85,6 @@
 						"INSERT INTO typeaccounts  (id, content) VALUES 
 							(1, 'master'),
 							(2, 'supermaster')",
-
-
-
-
 						"CREATE TABLE IF NOT EXISTS administrateurs (
 							id INT AUTO_INCREMENT PRIMARY KEY,
 							pseudo VARCHAR(100) NOT NULL UNIQUE,
@@ -117,10 +114,9 @@
 							typeasset_id INT,
 							FOREIGN KEY (typeasset_id) REFERENCES typeassets(id) ON DELETE CASCADE ON UPDATE CASCADE
 						)",
-
 						"INSERT INTO pc (barrecode, model, serialnum, etat, typeasset_id) VALUES
 							('10000001', 'Dell Inspiron', 'SN12345', 'Disponible', 1),
-							('10000001', 'HP EliteBook', 'SN67890', 'En réparation', 1)",
+							('10000011', 'HP EliteBook', 'SN67890', 'En réparation', 1)",
 
 
 						"CREATE TABLE IF NOT EXISTS eleves (
@@ -136,10 +132,6 @@
 						"INSERT INTO eleves (barrecode, nom, prenom, promo, classe, mail) VALUES
 							('00000001', 'Doe', 'John', '2426', 'BTSCOM', 'john.doe@example.com'),
 							('00000011', 'Smith', 'Jane', '2426', 'COM2325', 'jane.smith@example.com')",
-
-
-
-
 						"CREATE TABLE IF NOT EXISTS timeline (
 							id INT AUTO_INCREMENT PRIMARY KEY,
 							birth TIMESTAMP,
@@ -149,13 +141,7 @@
 							FOREIGN KEY (ideleves) REFERENCES eleves(id) ON DELETE CASCADE ON UPDATE CASCADE,
 							FOREIGN KEY (idpc) REFERENCES pc(id) ON DELETE CASCADE ON UPDATE CASCADE
 						)",
-
-							
-
-
 						"INSERT INTO timeline (ideleves, idpc, typeaction) VALUES (1,1,'out'),(1,2,'in')",
-
-
 						"CREATE TABLE IF NOT EXISTS visites (
 							id INT AUTO_INCREMENT PRIMARY KEY,
 							datetime TIMESTAMP,
@@ -192,7 +178,6 @@ PHP;
 				} catch (Exception $e) {
 					$error = "Erreur : " . $e->getMessage();
 				}
-			
 			}
 		}
 	}
@@ -203,9 +188,7 @@ PHP;
 	function deleteFile(){
 		PROD===0 ? rename('install.php', "install.save") : unlink(__FILE__);
 	}
-	?>
-
-<!DOCTYPE html>
+	?><!DOCTYPE html>
 <html lang="fr">
 <head>
 	<meta charset="UTF-8">

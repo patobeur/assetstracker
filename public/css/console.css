@@ -1,0 +1,11 @@
+.console {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: row;
+	padding: 0;
+	background-color: #7a1a1a;
+	width:300px;
+}
