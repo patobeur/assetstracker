@@ -10,35 +10,42 @@ class CheckDb
 	public function __construct() {
 		
 		if(!isset($_SESSION['errors'])){$_SESSION['errors'] = [];}
+		$this->checkInstallAndConfig();
+	}
 
-		$configFile = file_exists($this->dbConfigPath);
-		$installFile = file_exists($this->installPath);
+	public function checkInstallAndConfig()
+	{
+		$dbConfigExiste = file_exists($this->dbConfigPath);
+		$installExiste = file_exists($this->installPath);
 
 
-		if (!$configFile && $installFile) {
-			// echo("go install<br/>");
-			header('Location: install.php'); // Redirige vers la l'installation
-			exit;
-		}
-		elseif ($configFile && !$installFile) {
-			$this->check();
-		}
-		elseif ($configFile && $installFile) {
+		if ($dbConfigExiste && $installExiste) {
+			// dbConfig.php exite mais install.php aussi ;(
 			echo("dbconfig.php et install.php ne devraient pas exister en même temps ??");
 			$_SESSION['errors'][]="dbconfig.php et install.php ne devraient pas exister en même temps ??";
 			die();
 		}
-	}
+		if (!$dbConfigExiste && $installExiste) {
 
+			// dbConfig.php exite mais install.php aussi ;(
+			// si dbConfig.php n'exite pas mais que install.php existe 
+			// on lance l'install
+			header('Location: install.php'); // Redirige vers la l'installation
+			die();
+		}
+		if ($dbConfigExiste && !$installExiste) {
+			$errors = $this->checkDb();
+		}
+	}
 	public function getPdo()
 	{
 		return $this->pdo;
 	}
 
-	public function check()
+	public function checkDb()
 	{
 		require_once($this->dbConfigPath);
-
+		$dberror = [];
 		if (!empty($dbHost) && !empty($dbName) && !empty($dbUser)) {
 			try {
 				// Créer une connexion PDO
@@ -55,17 +62,18 @@ class CheckDb
 				// Vérifier si la table assetstracker existe
 				$query = $this->pdo->query("SHOW TABLES LIKE 'administrateurs'");
 				if ($query->rowCount() == 0) {
-					$dberror="La table 'administrateurs' n'existe pas dans la base de données.";
+					$dberror[]="La table 'administrateurs' n'existe pas dans la base de données.";
 					// header('Location: /');
 				}
 			} catch (\PDOException $e) {
-				$dberror="Erreur lors de la connexion à la base de données : " . $e->getMessage();
+				$dberror[]="Erreur lors de la connexion à la base de données : " . $e->getMessage();
 				// header('Location: /');
 			}
 		} else {
-			$dberror="Les paramètres de connexion à la base de données sont incomplets.";
+			$dberror[]="Les paramètres de connexion à la base de données sont incomplets.";
 			// header('Location: /');
 		}
+		return $dberror;
 	}
 
 	/**
@@ -79,26 +87,31 @@ class CheckDb
 			$errors[] = "Tous les champs doivent être remplis.";
 		}
 		if (empty($errors)) {
-			$query = "SELECT * FROM administrateurs WHERE pseudo = :username LIMIT 1";
-			$stmt = $this->pdo->prepare($query);
-			$stmt->bindParam(':username', $username, \PDO::PARAM_STR);
-			$stmt->execute();
-			$admin = $stmt->fetch(\PDO::FETCH_ASSOC);
-			if ($admin && password_verify($password, $admin['motdepasse'])) {
-				// Authentification réussie
-				$_SESSION['user'] = [
-					'id' => $admin['id'],
-					'pseudo' => $admin['pseudo'],
-					// 'nom' => $admin['nom'],
-					// 'prenom' => $admin['prenom']
-				];
-
-				$this->loginUpdate();
-
-				header("Location: /");
-				exit;
-			} else {
-				$errors[] = "Pseudo ou mot de passe incorrect.";
+			if(!$this->pdo){
+				$errors[] = "Pas de connexion active !";
+			}
+			else {
+				$query = "SELECT * FROM administrateurs WHERE pseudo = :username LIMIT 1";
+				$stmt = $this->pdo->prepare($query);
+				$stmt->bindParam(':username', $username, \PDO::PARAM_STR);
+				$stmt->execute();
+				$admin = $stmt->fetch(\PDO::FETCH_ASSOC);
+				if ($admin && password_verify($password, $admin['motdepasse'])) {
+					// Authentification réussie
+					$_SESSION['user'] = [
+						'id' => $admin['id'],
+						'pseudo' => $admin['pseudo'],
+						// 'nom' => $admin['nom'],
+						// 'prenom' => $admin['prenom']
+					];
+	
+					$this->loginUpdate();
+	
+					header("Location: /");
+					exit;
+				} else {
+					$errors[] = "Pseudo ou mot de passe incorrect.";
+				}
 			}
 		}
 		return $errors;
@@ -126,5 +139,22 @@ class CheckDb
 			return $pcs;
 		}
 		return null;
+	}
+	/**
+	 * Fonction pour avoir un/une eleve
+	 */
+	public function eleveOnce($table,$barrecode){
+		try {
+			$query = "SELECT * FROM ".$table." WHERE barrecode = :barrecode LIMIT 1";
+			$stmt = $this->pdo->prepare($query);
+			$stmt->bindParam(':barrecode', $barrecode, \PDO::PARAM_STR);
+			$stmt->execute();
+			$respons = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+			return $respons;
+		} catch (\PDOException $e) {
+			die("Erreur de connexion ou de création de la base de données : " . $e->getMessage());
+		} catch (\Exception $e) {
+			die("Erreur : " . $e->getMessage());
+		}
 	}
 }

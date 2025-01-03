@@ -30,6 +30,8 @@
         .login-container form {
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .login-container input {
@@ -47,17 +49,33 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        .login-container button.ok {
+            background-color:rgb(91, 213, 115);
+        }
 
         .login-container button:hover {
             background-color: #4178a9;
         }
     </style>
-    <div class="login-container">
+    <div class="login-container out">
         <h1>Connexion</h1>
         {{errors}}
         <form method="POST" action="">
-            <input type="text" name="username" placeholder="Pseudo" required>
-            <input type="password" name="password" placeholder="Mot de passe" required>
-            <button type="submit">Se connecter</button>
+            {{loginform}}
         </form>
     </div>
+    
+    <script>
+        let userok = document.getElementById('username')
+        let passok = document.getElementById('password')
+        let submitlogin = document.getElementById('submitlogin')
+        function toggleSubmitButton() {
+            if (userok.value !== '' && passok.value !== '') {
+                submitlogin.classList.add('ok');
+            } else {
+                submitlogin.classList.remove('ok');
+            }
+        }
+        userok.addEventListener('input', toggleSubmitButton);
+        passok.addEventListener('input', toggleSubmitButton);		
+    </script>

@@ -29,11 +29,29 @@ class FrontConstructor
 			$this->defaultPage = str_replace("{{TITLE}}",'default',$this->defaultPage);
 		}
 	}
+	public function addConsol($stack=[])
+	{
+		if (count($stack)>0){
+			$contents = '';
+			for ($i=0; $i < count($stack) ; $i++) {
+				$contents.="{{WHAT".$i."}}";
+			}
+			$this->defaultPage = str_replace("{{WHAT}}",$contents,$this->defaultPage);
+
+			for ($i=0; $i < count($stack) ; $i++) {
+				$this->defaultPage = str_replace("{{WHAT".$i."}}","<p>".$stack[$i]['content']."</p>",$this->defaultPage);
+			}
+		}
+		else {
+			$this->defaultPage = str_replace("{{WHAT}}",'♥',$this->defaultPage);
+		}
+	}
 
 	public function getPageToDisplay($url,$stack=[])
 	{
 		$this->addNavigation($url);
 		$this->addContent($stack);
+		$this->addConsol([["content"=>'test'],["content"=>WEBSITE['siteurl']]]);
 		return $this->defaultPage;
 	}
 

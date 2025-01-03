@@ -47,9 +47,9 @@
         <h1>Out</h1>
         {{errors}}
         <form method="POST" action="">
-            <input type="text" name="eleve" placeholder="eleve codebarre" codebarre>
+            <input type="text" name="eleve" placeholder="eleve codebarre" value="{{elevebarrecode}}">
             {{msgeleve}}
-            <input type="text" name="pc" placeholder="pc codebarre">
+            <input type="text" name="pc" placeholder="pc codebarre" value="{{pcbarrecode}}">
             {{msgpc}}
             <div>
                 <button type="submit">Check</button>
