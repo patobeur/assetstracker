@@ -84,7 +84,6 @@ class FrontConstructor
 			'listeleves'   => ((isset($_SESSION['user'])) ? '<li><a href="/listeleves">List Élèves</a></li>' : ''),
 			'timeline'   => ((isset($_SESSION['user'])) ? '<li><a href="/timeline">Timeline</a></li>' : ''),
 			// 'profile' => ((isset($_SESSION['user'])) ? '<li><a href="/profile">Profile</a></li>' : ''),
-			'dateTime'  => ((isset($_SESSION['user'])) ? '<li class="clock"><span id="dateTime"></span></li>' : ''),
 			'logout'  => ((isset($_SESSION['user'])) ? '<li class="deco"><a href="/logout">Déconnexion</a></li>' : ''),
 			// 'pseudo'  => (isset($_SESSION['user']) && isset($_SESSION['user']['pseudo'])) ? '<li><a>['.$_SESSION['user']['pseudo'].']</a></li>' : ''
 		];
