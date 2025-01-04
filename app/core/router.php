@@ -7,28 +7,20 @@ class Router
 	private $CheckDb;
 	private $defaultPage = '';
 	private $pdo = null;
+	private $Console = null;
 
-	public function __construct($CheckDb) {
+	public function __construct($CheckDb,$Console) {
+		$this->Console = $Console;
+		$this->Console->addMsg(["content"=>'Router',"title"=>'Controller']);
+
 		$this->CheckDb = $CheckDb;
 		$this->pdo = $this->CheckDb->getPdo();
-		// Définition des routes
-		// $this->routes = [
-		// 	'index'=> 'FrontController@showIndex@null',
-		// 	'login'=> 'LoginController@handleLogin@db',
-		// 	'logout'=> 'LoginController@logout@null',
-		// 	'profile'=> 'ProfileController@showProfile@null',
-		// 	'listpc'=> 'ListingController@listPc@db',
-		// 	'listeleves'=> 'ListingController@listEleves@db',
-		// 	'timeline'=> 'ListingController@listTimeline@db',
-		// 	'out'=> 'InOutController@handleOut@db'
-		// ];
 	}
 
     public function add($route, $action)
     {
         $this->routes[$route] = $action;
     }
-
 
 	public function setdefaultPage()
 	{
@@ -45,9 +37,6 @@ class Router
 		if ($url==="") {$url="index";}
 		if (!isset($_SESSION['user'])) {$url="login";}
 		if (!$this->pdo) {$url="index";}
-
-
-		
 
 		$this->setdefaultPage();
 
@@ -70,8 +59,7 @@ class Router
 	}
 
 	private function notFound()
-	{
-		
+	{		
 		$notFoundController = "app\\controllers\\NotFoundController";
 
 		if (class_exists($notFoundController) && method_exists($notFoundController, 'showIndex')) {

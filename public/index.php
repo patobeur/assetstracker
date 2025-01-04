@@ -1,51 +1,57 @@
 <?php
 	session_start();
-	
-	define('WEBSITE', [
-		'header' => 'Content-type: text/html; charset=UTF-8',
-		'siteurl' => 'http://' . $_SERVER['HTTP_HOST'],
-		'sitedir' => dirname($_SERVER['PHP_SELF'])
+	define('CONFIG', [
+		'WEBSITE' => [
+			'header' => 'Content-type: text/html; charset=UTF-8',
+			'siteurl' => 'http://' . $_SERVER['HTTP_HOST'],
+			'sitedir' => dirname($_SERVER['PHP_SELF']),
+			'refreshOut' => 10,
+		],
+		'PROD' => false, // 0 en dev, 1 en prod
 	]);
 
-	define('PROD',0); // 0 en dev, 1 en prod
 
+	define(constant_name: 'PROD', value: false); // 0 en dev, 1 en prod
+	
 	require_once '../app/core/autoloader.php';
 
+	use app\core\console;
 	use app\core\router;
 	use app\core\frontConstructor;
 	use app\core\checkdb;
 
-	$CheckDb = new CheckDb();
+	$Console = new Console(active: true);
 
-	$router = new Router($CheckDb);
+	$CheckDb = new CheckDb(Console: $Console);
+	$router = new Router(CheckDb: $CheckDb,Console: $Console);
 
 	// $pdo = $CheckDb->getPdo();
 	
 	// Définition des routes
-	$router->add('login', 'AuthController@login');
-	$router->add('index','FrontController@showIndex@null');
-	$router->add('login','LoginController@handleLogin@db');
-	$router->add('logout','LoginController@logout@null');
-	$router->add('profile','ProfileController@showProfile@null');
-	$router->add('listpc','ListingController@listPc@db');
-	$router->add('listeleves','ListingController@listEleves@db');
-	$router->add('timeline','ListingController@listTimeline@db');
-	$router->add('out','InOutController@handleOut@db');
+	$router->add(route: 'login', action: 'AuthController@login');
+	$router->add(route: 'index',action: 'FrontController@showIndex@null');
+	$router->add(route: 'login',action: 'LoginController@handleLogin@db');
+	$router->add(route: 'logout',action: 'LoginController@logout@null');
+	$router->add(route: 'profile',action: 'ProfileController@showProfile@null');
+	$router->add(route: 'listpc',action: 'ListingController@listPc@db');
+	$router->add(route: 'listeleves',action: 'ListingController@listEleves@db');
+	$router->add(route: 'timeline',action: 'ListingController@listTimeline@db');
+	$router->add(route: 'out',action: 'InOutController@handleOut@db');
 
-	$frontConstructor = new FrontConstructor();
+	$frontConstructor = new FrontConstructor(Console: $Console);
 
 	// Récupération de l'URL
-	$url = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+	$url = trim(string: parse_url(url: $_SERVER['REQUEST_URI'], component: PHP_URL_PATH), characters: '/');
 
-	$content = $router->dispatch($url,$CheckDb);
+	$content = $router->dispatch(url: $url);
 
-	$pageToDisplay = $frontConstructor->getPageToDisplay($url,[$content]);
+	$pageToDisplay = $frontConstructor->getPageToDisplay(url: $url,stack: [$content]);
 
 	if(isset($content['Redirect'])){
 		$datas = 'refresh:'.$content['Redirect']['refresh'].';url='.$content['Redirect']['url'];
-		header($datas);
+		header(header: $datas);
 	}
 	if (!headers_sent()) {
-		header(WEBSITE['header']);
+		header(header: CONFIG['WEBSITE']['header']);
 	}
 	echo $pageToDisplay;

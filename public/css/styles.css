@@ -1,102 +1,68 @@
 body {
 	font-family: Arial, sans-serif;
-	background-color: #f0f0f0;
 	margin: 0;
 	padding: 0;
-	background: url('../img/login_background_0.webp') no-repeat center center fixed;
-	background-size: cover;
+	background: url('../img/default.webp');
+	background-repeat: no-repeat;
+	background-position: 50% 0;
+	background-size:auto;
+	width:100%;
+	height: 100%;
 }
 
-/* Animation du gradient */
-
-        /* Effet doux sur l'écran */
-        .console {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8); /* Ajoute une légère transparence pour adoucir */
-            z-index: -10;
-        }
-
-/* Animation de rotation */
-@keyframes rotateGradient {
-	0% {
-		transform: rotate(0deg);
+.container {
+	position: absolute;
+	width: 100%;
+	height: calc(100vh - 30px);
+	overflow-y: auto;
+	background-color: #ffffff8b;
+	padding-top: 30px;
+	
+	.error {
+		color: red;
+		text-align: center;
+		margin-bottom: 1em;
 	}
 
-	100% {
-		transform: rotate(360deg);
+	/* PAGE */
+	/* Styles de base pour les textes */
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: 'Poppins', sans-serif;
+		color: #2c3e50;
+		text-align: center;
+		letter-spacing: 2px;
+		text-transform: uppercase;
+		margin-bottom: 10px;
 	}
-}
-
-@keyframes gradientAnimation {
-	0% {
-		background-position: 0% 50%;
+	p {
+		font-family: 'Roboto', sans-serif;
+		color: #7f8c8d;
+		line-height: 1.6;
+		font-size: 18px;
+		margin-bottom: 15px;
+		text-align: justify;
+	}
+	table {
+		width: 80%;
+		margin: 20px auto;
+		border-collapse: collapse;
+		background-color: #e7e7e7;
+		th,
+		td {
+			padding: 10px;
+			text-align: left;
+			border: 1px solid #ccc;
+		}
+		th {
+			background-color: #333;
+			color: white;
+		}
 	}
 
-	50% {
-		background-position: 100% 50%;
-	}
-
-	100% {
-		background-position: 0% 50%;
-	}
 }
 
-/* PAGE */
-/* Styles de base pour les textes */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	font-family: 'Poppins', sans-serif;
-	/* Utilisez une police moderne */
-	color: #2c3e50;
-	/* Couleur sombre élégante */
-	text-align: center;
-	/* Centrer les titres */
-	letter-spacing: 2px;
-	/* Espacement entre les lettres */
-	text-transform: uppercase;
-	/* Transforme le texte en majuscule */
-	margin-bottom: 20px;
-	/* Espacement inférieur */
-}
-
-/* Paragraphe élégant */
-p {
-	font-family: 'Roboto', sans-serif;
-	/* Police lisible et moderne */
-	color: #7f8c8d;
-	/* Couleur grise douce */
-	line-height: 1.6;
-	/* Hauteur de ligne pour un meilleur espacement */
-	font-size: 18px;
-	/* Taille confortable pour la lecture */
-	margin-bottom: 15px;
-	/* Espacement inférieur */
-	text-align: justify;
-	/* Alignement justifié pour un style formel */
-}
-
-table {
-	width: 80%;
-	margin: 20px auto;
-	border-collapse: collapse;
-}
-
-table th,
-table td {
-	padding: 10px;
-	text-align: left;
-	border: 1px solid #ccc;
-}
-
-table th {
-	background-color: #333;
-	color: white;
-}

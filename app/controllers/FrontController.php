@@ -4,7 +4,7 @@
 
 	class FrontController
 	{
-		public function showIndex()
+		public function showIndex(): array
 		{
 			$content = [
 				'TITLE' => "Accueil title",

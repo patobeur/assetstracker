@@ -6,9 +6,9 @@
 	$dbConfigPath = '../app/conf/dbconfig.php';
 	$defaultHost = 'localhost';
 	$defaultUser = '';
-	$defaultDb = '';
+	$defaultDb = 'assetsTracker';
 
-	$defaultAdminPseudo = '';
+	$defaultAdminPseudo = 'titi';
 	$defaultAdminPasse = '';
 
 	$defaultAdminMail = 'admin@example.com';
@@ -106,7 +106,7 @@
 							$defaultAdminTypeaccount."')",
 						"CREATE TABLE IF NOT EXISTS pc (
 							id INT AUTO_INCREMENT PRIMARY KEY,
-							barrecode VARCHAR(50),
+							barrecode VARCHAR(50) UNIQUE,
 							model VARCHAR(100),
 							serialnum VARCHAR(100),
 							birth TIMESTAMP,
@@ -117,11 +117,9 @@
 						"INSERT INTO pc (barrecode, model, serialnum, etat, typeasset_id) VALUES
 							('10000001', 'Dell Inspiron', 'SN12345', 'Disponible', 1),
 							('10000011', 'HP EliteBook', 'SN67890', 'En réparation', 1)",
-
-
 						"CREATE TABLE IF NOT EXISTS eleves (
 							id INT AUTO_INCREMENT PRIMARY KEY,
-							barrecode VARCHAR(50),
+							barrecode VARCHAR(50) UNIQUE,
 							nom VARCHAR(100),
 							prenom VARCHAR(100),
 							promo VARCHAR(50),
@@ -195,9 +193,8 @@ PHP;
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Installer les tables</title>
 	<style>
-		
 		body {
-				font-family: Arial, sans-serif;
+				font-family: Arial, sans-serif; */
 				background: url('img/login_background_1.webp') no-repeat center center fixed;
 				background-size: cover;
 				color: #333;
@@ -247,8 +244,10 @@ PHP;
 
 
 		label {
+			position: relative;
 			font-weight: bold;
 			text-align: left;
+			padding: 7px ;
 		}
 
 		.input-container {
@@ -263,6 +262,7 @@ PHP;
 			border-radius: 4px;
 			font-size: 16px;
 			width: 100%;
+			border-radius: 9px;
 			box-sizing: border-box;
 		}
 
@@ -309,25 +309,25 @@ PHP;
 			<div class="blocs">
 				<label for="host">Hôte :</label>
 				<div class="input-container">
-					<i class="fa fa-server icon"></i>
+					<span class="icon">🎁</span>
 					<input type="text" id="host" name="host" required value="<?php echo $defaultHost; ?>">
 				</div>
 
 				<label for="db">Nom de la base de données :</label>
 				<div class="input-container">
-					<i class="fa fa-database icon"></i>
+					<span class="icon">💽</span>
 					<input type="text" id="db" name="db" required value="<?php echo $defaultDb; ?>">
 				</div>
 
 				<label for="user">Utilisateur :</label>
 				<div class="input-container">
-					<i class="fa fa-user icon"></i>
+					<span class="icon">🤚</span>
 					<input type="text" id="user" name="user" required value="<?php echo $defaultUser; ?>">
 				</div>
 
 				<label for="pass">Mot de passe :</label>
 				<div class="input-container">
-					<i class="fa fa-lock icon"></i>
+					<span class="icon">🔒</span>
 					<input type="password" id="pass" name="pass" style="padding-right: 30px;">
 					<span id="togglePass" style="
 						position: absolute;
@@ -340,11 +340,15 @@ PHP;
 				</div>
 			</div>
 			<div class="blocs">
+				<h2>Compte admin</h2>
 				<label for="user">Pseudo Admin :</label>
-				<div class="input-container"><i class="fa fa-user icon"></i><input type="text" id="adminpseudo" name="adminpseudo" required value="<?php echo $defaultAdminPseudo; ?>"></div>
+				<div class="input-container">
+					<span class="icon">🤚</span>
+					<input type="text" id="adminpseudo" name="adminpseudo" required value="<?php echo $defaultAdminPseudo; ?>">
+				</div>
 				<label for="pass">Mot de passe Admin :</label>
 				<div class="input-container">
-					<i class="fa fa-lock icon"></i>
+					<span class="icon">🔒</span>
 					<input type="password" id="adminpass" name="adminpass" style="padding-right: 30px;">
 					<span id="toggleAdminPass" style="position: absolute;top: 50%;right: 10px;transform: translateY(-50%);cursor: pointer;color: #999;">&#128065;</span>
 				</div>

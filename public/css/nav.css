@@ -1,5 +1,5 @@
 .nav-top {
-	position: sticky;
+	position: absolute;
 	top: 0;
 	left: 0;
 	margin: 0;
@@ -7,37 +7,42 @@
 	flex-direction: row;
 	padding: 0;
 	background-color: #7a1a1a;
+	width: 100%;
 	.nav-top-ul {
 		list-style-type: none;
 		margin: 0;
 		padding: 0;
 		background-color: #2b2424;
 		display: flex;
+		align-items: center;
 		flex-direction: row;
 		width: 100%;
 		li {
-			display: inline;white-space: nowrap;
+			/* display: inline; */
+			white-space: nowrap;
+			padding: 5px 5px;
 			a {
 				color: white;
-				padding: 14px 20px;
 				text-decoration: none;
-				display: inline-block;
-				margin-left:auto;
-				&:hover {
-					background-color: white;
-					color: #111;
+			}
+			&:hover {
+				background-color: white;
+				a {
+				color: #111;
 				}
 			}
-			&.deco {
-				display: inline-block;
+			&.clock {
 				margin-left:auto;
+			}
+			&.deco {
+				background-color: #531616;
 				a {
-					background-color: #531616;
 					color: rgb(255, 208, 0);
-					&:hover {
-						color: white;
-					}
 				}
+				&:hover {
+					a {color: white;}
+				}
+			}
 		}
 	}
 }
