@@ -9,9 +9,6 @@
 		],
 		'PROD' => false, // 0 en dev, 1 en prod
 	]);
-
-
-	define(constant_name: 'PROD', value: false); // 0 en dev, 1 en prod
 	
 	require_once '../app/core/autoloader.php';
 

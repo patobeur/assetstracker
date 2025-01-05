@@ -31,10 +31,8 @@
 				color: #111;
 				}
 			}
-			&.clock {
-				margin-left:auto;
-			}
 			&.deco {
+				margin-left:auto;
 				background-color: #531616;
 				a {
 					color: rgb(255, 208, 0);

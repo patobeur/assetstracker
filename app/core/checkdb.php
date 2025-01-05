@@ -20,15 +20,6 @@ class CheckDb
 		$dbConfigExiste = file_exists(filename: $this->dbConfigPath);
 		$installExiste = file_exists(filename: $this->installPath);
 
-		$this->Console->addMsg(["content"=>($dbConfigExiste?'ok':'ko'),"title"=>'dbConfigExiste']);
-		$this->Console->addMsg(["content"=>($installExiste?'ok':'ko'),"title"=>'installExiste']);
-
-		if ($dbConfigExiste && $installExiste) {
-			// dbConfig.php exite mais install.php aussi ;(
-			echo("dbconfig.php et install.php ne devraient pas exister en même temps ??");
-			$_SESSION['errors'][]="dbconfig.php et install.php ne devraient pas exister en même temps ??";
-			die();
-		}
 		if (!$dbConfigExiste && $installExiste) {
 
 			// dbConfig.php exite mais install.php aussi ;(
@@ -37,7 +28,21 @@ class CheckDb
 			header(header: 'Location: install.php'); // Redirige vers la l'installation
 			die();
 		}
-		if ($dbConfigExiste && !$installExiste) {
+		if ($dbConfigExiste && $installExiste) {
+			// dbConfig.php exite mais install.php aussi ;(
+			$_SESSION['errors'][]="dbconfig.php et install.php ne devraient pas exister en même temps ??";
+			// die();
+
+			
+			if(CONFIG['PROD']){
+				die("En mode PROD, 'dbconfig.php' et 'install.php' ne devraient pas exister en même temps ??");
+			}
+			else {
+				$errors = $this->checkDb();
+				$this->Console->addMsg(["content"=>"dbconfig.php et install.php ne devraient pas exister en même temps ??","title"=>'ATTENTION',"class"=>'alerte']);
+			}
+		}
+		elseif ($dbConfigExiste && !$installExiste) {
 			$errors = $this->checkDb();
 		}
 	}
@@ -56,7 +61,7 @@ class CheckDb
 				$dsn = "mysql:host={$dbHost};dbname={$dbName};charset=utf8";
 				$this->pdo = new \PDO(dsn: $dsn, username: $dbUser, password: $dbPassword);
 
-				if (PROD) { // en prod
+				if (CONFIG['PROD']) { // en prod
 					$this->pdo->setAttribute(attribute: \PDO::ATTR_ERRMODE, value: \PDO::ERRMODE_SILENT);
 				}
 				else { // en dev
@@ -65,7 +70,7 @@ class CheckDb
 
 				// Vérifier si la table assetstracker existe
 				$query = $this->pdo->query("SHOW TABLES LIKE 'administrateurs'");
-				if ($query->rowCount() == 0) {
+				if ($query->rowCount() < 1) {
 					$dberror[]="La table 'administrateurs' n'existe pas dans la base de données.";
 					// header('Location: /');
 				}

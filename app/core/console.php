@@ -11,7 +11,6 @@
 
 		public function __construct($active=false) {
 			$this->active= $active ?? false;
-			$this->msg[] = ["content"=>'Console',"title"=>'Core'];
 		}
 	
 		public function addMsg($datas): void {
@@ -30,7 +29,8 @@
 					$this->vue = str_replace(search: "{{console}}",replace: $contents,subject: $this->vue);
 	
 					for ($i=0; $i < count(value: $this->msg) ; $i++) {
-						$pack = "<p>".($this->msg[$i]['title']??'Titre').":";
+						$class = ' class="'.($this->msg[$i]['class'] ?? '').'"';
+						$pack = "<p{$class}>".($this->msg[$i]['title']??'Titre').":";
 						$pack .= "".$this->msg[$i]['content']."</p>";
 						$this->vue = str_replace(search: "{{console{$i}}}",replace: $pack,subject: $this->vue);
 					}
