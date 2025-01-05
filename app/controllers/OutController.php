@@ -1,7 +1,7 @@
 <?php
 	namespace app\controllers;
 	
-	class InOutController {
+	class OutController {
 		private $pdo;
 		private $CheckDb;
 		private $eleve = null;
@@ -16,8 +16,14 @@
 		}
 		
 		// Gérer le traitement de connexion
-		public function handleOut(): array{
+		public function handle(): array{
 			$this->messages = [];
+			if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+				if(isset($_GET['a'])) {
+					// die($_GET['a']);
+				}
+			}
+
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->eleve = null;
 				$this->pc = null;
@@ -65,7 +71,7 @@
 					'TITLE'=> 'Page Login'
 				];
 				$contents['Redirect'] = [
-					'url'=> '/out',
+					'url'=> '/out?',
 					'refresh'=> CONFIG['WEBSITE']['refreshOut']
 				];
 			}

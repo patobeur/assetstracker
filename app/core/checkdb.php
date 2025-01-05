@@ -10,8 +10,6 @@ class CheckDb
 
 	public function __construct($Console) {
 		$this->Console = $Console;
-		
-		if(!isset($_SESSION['errors'])){$_SESSION['errors'] = [];}
 		$this->checkInstallAndConfig();
 	}
 
@@ -30,20 +28,22 @@ class CheckDb
 		}
 		if ($dbConfigExiste && $installExiste) {
 			// dbConfig.php exite mais install.php aussi ;(
-			$_SESSION['errors'][]="dbconfig.php et install.php ne devraient pas exister en même temps ??";
-			// die();
-
 			
 			if(CONFIG['PROD']){
 				die("En mode PROD, 'dbconfig.php' et 'install.php' ne devraient pas exister en même temps ??");
 			}
 			else {
-				$errors = $this->checkDb();
+				$dbErrors = $this->checkDb();
+				if(count($dbErrors)>0) {
+					echo "La bdd n'existe pas, regardez votre dbConfig ?";
+					die();
+				}
 				$this->Console->addMsg(["content"=>"dbconfig.php et install.php ne devraient pas exister en même temps ??","title"=>'ATTENTION',"class"=>'alerte']);
 			}
 		}
 		elseif ($dbConfigExiste && !$installExiste) {
-			$errors = $this->checkDb();
+			$dbErrors = $this->checkDb();
+			if(count($dbErrors)>0) {echo "La bdd n'existe pas et il n'y a aucun fichier d'installation ?";die();}
 		}
 	}
 	public function getPdo(): \PDO
@@ -53,26 +53,31 @@ class CheckDb
 
 	public function checkDb(): array
 	{
-		require_once($this->dbConfigPath);
+		require_once $this->dbConfigPath ;
 		$dberror = [];
-		if (!empty($dbHost) && !empty($dbName) && !empty($dbUser)) {
+		if (!empty($dbHost) && !empty($dbName) && !empty($dbUser) && !empty($dbUser) && isset($dbPassword)) {
 			try {
 				// Créer une connexion PDO
-				$dsn = "mysql:host={$dbHost};dbname={$dbName};charset=utf8";
+				$dsn = "mysql:host=".$dbHost.";dbname=".$dbName.";charset=utf8";
 				$this->pdo = new \PDO(dsn: $dsn, username: $dbUser, password: $dbPassword);
+				if($this->pdo){
+					if (CONFIG['PROD']) { // en prod
+						$this->pdo->setAttribute(attribute: \PDO::ATTR_ERRMODE, value: \PDO::ERRMODE_SILENT);
+					}
+					else { // en dev
+						$this->pdo->setAttribute(attribute: \PDO::ATTR_ERRMODE, value: \PDO::ERRMODE_EXCEPTION);
+					}
 
-				if (CONFIG['PROD']) { // en prod
-					$this->pdo->setAttribute(attribute: \PDO::ATTR_ERRMODE, value: \PDO::ERRMODE_SILENT);
-				}
-				else { // en dev
-					$this->pdo->setAttribute(attribute: \PDO::ATTR_ERRMODE, value: \PDO::ERRMODE_EXCEPTION);
-				}
+					// Vérifier si la table assetstracker existe
+					$query = $this->pdo->query("SHOW TABLES LIKE 'administrateurs'");
 
-				// Vérifier si la table assetstracker existe
-				$query = $this->pdo->query("SHOW TABLES LIKE 'administrateurs'");
-				if ($query->rowCount() < 1) {
-					$dberror[]="La table 'administrateurs' n'existe pas dans la base de données.";
-					// header('Location: /');
+					if ($query->rowCount() < 1) {
+						$dberror[]="La table 'administrateurs' n'existe pas dans la base de données.";
+						// header('Location: /');
+					}
+				}
+				else {
+					die("no bdd");
 				}
 			} catch (\PDOException $e) {
 				$dberror[]="Erreur lors de la connexion à la base de données : " . $e->getMessage();
@@ -179,17 +184,37 @@ class CheckDb
 		}
 		return $respons;
 	}
-	public function insertTimeline($ideleves, $idpc, $typeaction) {  
+	public function insertTimeline($idpc, $ideleves=null, $typeaction) {  
 		$this->Console->addMsg(["content"=>$ideleves,"title"=>'ideleves']);
 		$this->Console->addMsg(["content"=>$idpc,"title"=>'idpc']);
-		if($ideleves && $idpc){
+		print_r(gettype($ideleves));
+		if(($ideleves && $idpc) || (gettype($ideleves)==='null' && $idpc) ) {
 			try {
-			$query = "INSERT INTO timeline (ideleves, idpc, typeaction) VALUES (:ideleves, :idpc, :typeaction)";
-			$stmt = $this->pdo->prepare($query);
-			$stmt->bindParam(':ideleves', $ideleves, \PDO::PARAM_STR);
-			$stmt->bindParam(':idpc', $idpc, \PDO::PARAM_STR);
-			$stmt->bindParam(':typeaction', $typeaction, \PDO::PARAM_STR);
-			$stmt->execute();
+				$query = "INSERT INTO timeline (idpc, ideleves, typeaction) VALUES (:idpc, :ideleves, :typeaction)";
+				$stmt = $this->pdo->prepare($query);
+				$stmt->bindParam(':ideleves', $ideleves, \PDO::PARAM_STR);
+				$stmt->bindParam(':idpc', $idpc, \PDO::PARAM_STR);
+				$stmt->bindParam(':typeaction', $typeaction, \PDO::PARAM_STR);
+				$stmt->execute();
+			} catch (\PDOException $e) {
+				die("Erreur d'enregistrement des données : " . $e->getMessage());
+			} catch (\Exception $e) {
+				die("Erreur d'enregistrement des données : " . $e->getMessage());
+			}
+			return true;
+		}
+		return false;
+	}
+	public function insertTimelineIn($idpc, $typeaction) {  
+		$this->Console->addMsg(["content"=>$idpc,"title"=>'idpc']);
+
+		if($idpc) {
+			try {
+				$query = "INSERT INTO timeline (idpc, typeaction) VALUES (:idpc, :typeaction)";
+				$stmt = $this->pdo->prepare($query);
+				$stmt->bindParam(':idpc', $idpc, \PDO::PARAM_STR);
+				$stmt->bindParam(':typeaction', $typeaction, \PDO::PARAM_STR);
+				$stmt->execute();
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
 			} catch (\Exception $e) {

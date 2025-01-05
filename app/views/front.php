@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="/css/form.css">
 	<link rel="stylesheet" href="/css/console.css">
 	{{background}}
+	<script src="/js/JsBarcode.all.min.js"></script>
 	<script src="/js/clock.js" defer></script>
 </head>
 

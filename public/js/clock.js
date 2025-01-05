@@ -1,4 +1,3 @@
-
 // Exécuter la fonction après que la page est complètement chargée
 document.addEventListener('DOMContentLoaded', () => {
 	let clock = createClock()

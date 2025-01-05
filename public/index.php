@@ -21,8 +21,6 @@
 
 	$CheckDb = new CheckDb(Console: $Console);
 	$router = new Router(CheckDb: $CheckDb,Console: $Console);
-
-	// $pdo = $CheckDb->getPdo();
 	
 	// Définition des routes
 	$router->add(route: 'login', action: 'AuthController@login');
@@ -33,7 +31,8 @@
 	$router->add(route: 'listpc',action: 'ListingController@listPc@db');
 	$router->add(route: 'listeleves',action: 'ListingController@listEleves@db');
 	$router->add(route: 'timeline',action: 'ListingController@listTimeline@db');
-	$router->add(route: 'out',action: 'InOutController@handleOut@db');
+	$router->add(route: 'out',action: 'OutController@handle@db');
+	$router->add(route: 'in',action: 'InController@handle@db');
 
 	$frontConstructor = new FrontConstructor(Console: $Console);
 
