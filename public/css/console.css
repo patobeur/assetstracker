@@ -1,26 +1,48 @@
 .console {
 	position: absolute;
 	width:300px;
-	height:2rem;
 	right: 0px;
 	bottom: 0px;
 	margin: 0;
-	padding: 0;
+	padding: 5px 3px 0 5px;
 	background-color: #0e1410;
-	color:rgb(0, 223, 8);
-	padding: 5px;
-	transition: all 1s;
-	overflow: hidden;
+	max-height: 100%;
+	overflow-y: auto;
+	border-top-left-radius: 9px;
+	/* align-items: flex-end; */
 	p{
-		color:rgb(0, 223, 8);
-		padding: 0;
-		margin: 0;		
+		background-color: rgb(216, 216, 216);
+		margin: 0 5px 0 5px;
+		padding: 5px 5px 5px 5px;
+		display: none;
+		border-top: 1px solid black;
 		&.alerte {
 			color: red;
 		}
+		&.succes {
+			color: rgb(0, 255, 13);
+		}
+		&:last-child {
+			border-radius: 9px;
+			margin: 0 5px 5px 5px;
+			border-top-left-radius:0;
+			border-top-right-radius:0;
+		}
+		&:first-child {
+			display: block;
+			border-radius: 9px;
+			margin: 5px 5px 0 5px;
+			border-bottom-left-radius:0;
+			border-bottom-right-radius:0;
+			border-top: 0;
+		}
 	}
 	&:hover{
-		width:80%;
-		height:80%;
+		p {
+			display: block;
+			:first-child {
+				margin-top: 40px;
+			}
+		}
 	}
 }

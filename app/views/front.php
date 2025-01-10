@@ -19,11 +19,7 @@
 	<div class="container">
 		{{CONTENTS}}
 	</div>
-	<nav class="nav-top">
-		<ul class="nav-top-ul">
-			{{NAVIGATION}}
-		</ul>
-	</nav>
+	{{topNavView}}
 	{{console}}
 </body>
 

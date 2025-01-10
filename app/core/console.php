@@ -6,13 +6,20 @@
 	{
 		private $defaultPage;
 		private $msg = [];
+		private $msgOnce = [];
 		private $active = false;
 		private $vue = '<div class="console">{{console}}</div>';
 
 		public function __construct($active=false) {
-			$this->active= $active ?? false;
+			if(!isset($_SESSION['msg'])){
+				$_SESSION['msg'] = [];
+			}
+			$this->active = $active ?? false;
 		}
 	
+		public function addMsgSESSION($datas): void {
+			$_SESSION['msg'][] = $datas;
+		}
 		public function addMsg($datas): void {
 			$this->msg[] = $datas;
 		}
@@ -20,7 +27,9 @@
 		public function addConsole($defaultPage): string {
 			$this->defaultPage = $defaultPage ?? null;
 			if ($this->active) {
-	
+				// merge des deux array msg
+				$this->msg = array_merge($this->msg,$_SESSION['msg']);
+
 				if (count(value: $this->msg)>0){
 					$contents = '';
 					for ($i=0; $i < count(value: $this->msg) ; $i++) {
@@ -30,8 +39,9 @@
 	
 					for ($i=0; $i < count(value: $this->msg) ; $i++) {
 						$class = ' class="'.($this->msg[$i]['class'] ?? '').'"';
-						$pack = "<p{$class}>".($this->msg[$i]['title']??'Titre').":";
-						$pack .= "".$this->msg[$i]['content']."</p>";
+						$pack = "<p{$class}>".($this->msg[$i]['title']??'?').": ";
+						$pack .= "".$this->msg[$i]['content'];
+						$pack .= " (".$this->msg[$i]['birth'].")</p>";
 						$this->vue = str_replace(search: "{{console{$i}}}",replace: $pack,subject: $this->vue);
 					}
 				}

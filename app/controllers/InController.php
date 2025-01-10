@@ -18,11 +18,7 @@
 		// Gérer le traitement de connexion
 		public function handle(): array{
 			$this->messages = [];
-			if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-				if(isset($_GET['a'])) {
-					// die($_GET['a']);
-				}
-			}
+			
 
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				$this->pc = null;
@@ -48,28 +44,44 @@
 
 				}
 			}
-			if($this->pc ){
-				$html = $this->renderView();
-				
-				$contents = [
-					'CONTENT'=> $html,
-					'TITLE'=> 'Page Login'
-				];
-				$contents['Redirect'] = [
-					'url'=> '/in?',
-					'refresh'=> CONFIG['WEBSITE']['refreshOut']
-				];
+
+			
+			if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+				if(isset($_GET['last']) && !empty($_GET['last'])) {
+					$last = $this->CheckDb->onceTimeline('timeline','*',$_GET['last']);
+					if($last) {
+						// $this->messages[]=["content"=>"dernière loc !","result"=>"succes"];
+					}
+				}
 			}
-			else {
-				$html = $this->renderView();
-				
-				$contents = [
-					'CONTENT'=> $html,
-					'TITLE'=> 'Page Login'
+
+			$html = $this->renderView();
+			
+			$contents = [
+				'CONTENT'=> $html,
+				'TITLE'=> 'Page Login'
+			];
+			
+
+			if($this->pc ){
+				$last = $this->CheckDb->lastTimeline('timeline','*');
+				$id = $last[0]['id'] ?? '';				
+				$contents['Redirect'] = [
+					'url'=> '/in?last='.$id,
+					'refresh'=> CONFIG['REFRESH']['in']
 				];
 			}
 
+
+
+			
+
 			return $contents;
+		}
+	
+		// Afficher la vue timeline dernière action reçus
+		private function addLastTimeline(): string {
+			//
 		}
 	
 		// Afficher la vue login avec les erreurs
@@ -79,6 +91,18 @@
 			$messagepc = "";
 			$messages = '';			
 	
+				// Ajouter les erreurs
+				if (!empty($this->messages)) {
+					foreach ($this->messages as $error) {
+						$content = $error['content'];
+						$result = $error['result'];
+						$messages .= '<p class="'.$result.'">' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . "</p>";
+					}
+					$html = str_replace('{{errors}}', $messages, $html);
+				}
+				else {
+					$html = str_replace('{{errors}}', '', $html);
+				}
 			
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -93,22 +117,14 @@
 				}
 
 
-				// Ajouter les erreurs
-				if (!empty($this->messages)) {
-					foreach ($this->messages as $error) {
-						$content = $error['content'];
-						$result = $error['result'];
-						$messages .= '<p class="'.$result.'">' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . "</p>";
-					}
-					$html = str_replace('{{errors}}', $messages, $html);
-				}
-				else {
-					$html = str_replace('{{errors}}', '', $html);
-				}
 			}
 			else {
 				$html = str_replace('{{msgpc}}', '', $html);
-				$html = str_replace('{{errors}}', '', $html);
+
+				
+
+
+				// $html = str_replace('{{errors}}', '', $html);
 				$html = str_replace('{{pcbarrecode}}', '', $html);
 			}
 

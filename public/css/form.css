@@ -13,6 +13,10 @@
 		border-radius: 12px;		
 		p {
 			text-align: center;
+			&.succes {
+				color: #71ff4d;
+				font-size: 14px;
+			}
 			&.alerte {
 				color: #ff4d4d;
 				font-size: 14px;

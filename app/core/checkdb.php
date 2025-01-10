@@ -38,7 +38,12 @@ class CheckDb
 					echo "La bdd n'existe pas, regardez votre dbConfig ?";
 					die();
 				}
-				$this->Console->addMsg(["content"=>"dbconfig.php et install.php ne devraient pas exister en même temps ??","title"=>'ATTENTION',"class"=>'alerte']);
+				$this->Console->addMsg([
+					"content"=>"dbconfig.php et install.php ne devraient pas exister en même temps ??",
+					"title"=>'🚫',
+					"class"=>'alerte',
+					"birth"=>date("h:i:s")
+				]);
 			}
 		}
 		elseif ($dbConfigExiste && !$installExiste) {
@@ -91,6 +96,23 @@ class CheckDb
 	}
 
 	/**
+	 * Fonction getRights
+	 */
+	function getTypeAccount($id){
+		try{
+			$query = "SELECT content FROM typeaccounts WHERE id = :id LIMIT 1";
+			$stmt = $this->pdo->prepare($query);
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$stmt->execute();
+			$typeAccount = $stmt->fetch(\PDO::FETCH_ASSOC);
+			return $typeAccount;
+		} catch (\PDOException $e) {
+			die("Erreur de connexion à la base de données : " . $e->getMessage());
+		} catch (\Exception $e) {
+			die("Erreur de connexion à la base de données : " . $e->getMessage());
+		}
+	}
+	/**
 	 * Fonction pour login
 	 */
 	function login($username=null,$password=null): array{
@@ -112,11 +134,16 @@ class CheckDb
 				$admin = $stmt->fetch(\PDO::FETCH_ASSOC);
 				if ($admin && password_verify(password: $password, hash: $admin['motdepasse'])) {
 					// Authentification réussie
+
+					$typeaccount = $this->getTypeAccount($admin['id']);
+					
 					$_SESSION['user'] = [
 						'id' => $admin['id'],
 						'pseudo' => $admin['pseudo'],
-						// 'nom' => $admin['nom'],
-						// 'prenom' => $admin['prenom']
+						'nom' => $admin['nom'],
+						'prenom' => $admin['prenom'],
+						'typeaccount' => $admin['typeaccount_id'],
+						'account' => $typeaccount['content'],
 					];
 	
 					$this->loginUpdate();
@@ -184,9 +211,7 @@ class CheckDb
 		}
 		return $respons;
 	}
-	public function insertTimeline($idpc, $ideleves=null, $typeaction) {  
-		$this->Console->addMsg(["content"=>$ideleves,"title"=>'ideleves']);
-		$this->Console->addMsg(["content"=>$idpc,"title"=>'idpc']);
+	public function insertTimelineOut($idpc, $ideleves=null, $typeaction) { 
 		print_r(gettype($ideleves));
 		if(($ideleves && $idpc) || (gettype($ideleves)==='null' && $idpc) ) {
 			try {
@@ -195,7 +220,13 @@ class CheckDb
 				$stmt->bindParam(':ideleves', $ideleves, \PDO::PARAM_STR);
 				$stmt->bindParam(':idpc', $idpc, \PDO::PARAM_STR);
 				$stmt->bindParam(':typeaction', $typeaction, \PDO::PARAM_STR);
-				$stmt->execute();
+				$stmt->execute(); 
+				$this->Console->addMsgSESSION([
+					"content"=>"Élève {$ideleves} et PC {$idpc}",
+					"title"=>'⬅️',
+					"class"=>'',
+					"birth"=>date("h:i:s")
+				]);
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
 			} catch (\Exception $e) {
@@ -206,7 +237,6 @@ class CheckDb
 		return false;
 	}
 	public function insertTimelineIn($idpc, $typeaction) {  
-		$this->Console->addMsg(["content"=>$idpc,"title"=>'idpc']);
 
 		if($idpc) {
 			try {
@@ -215,6 +245,12 @@ class CheckDb
 				$stmt->bindParam(':idpc', $idpc, \PDO::PARAM_STR);
 				$stmt->bindParam(':typeaction', $typeaction, \PDO::PARAM_STR);
 				$stmt->execute();
+				$this->Console->addMsgSESSION([
+					"content"=>"PC {$idpc} rendu.",
+					"title"=>'➡️',
+					"class"=>'',
+					"birth"=>date("h:i:s")
+				]);
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
 			} catch (\Exception $e) {
@@ -223,5 +259,51 @@ class CheckDb
 			return true;
 		}
 		return false;
+	}
+
+	
+	/**
+	 * Fonction pour avoir la dernière Timeline
+	 */
+	public function lastTimeline($table=null,$cols=null): array{ 
+		$last = [];
+		if($table && $cols){
+			try {
+				if($table){
+					$query = "SELECT {$cols} FROM {$table} ORDER by id DESC LIMIT 1";
+					$stmt = $this->pdo->prepare($query);
+					$stmt->execute();
+					$last = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+				}
+				return $last;
+			} catch (\PDOException $e) {
+				die("Erreur de connexion à la base de données : " . $e->getMessage());
+			} catch (\Exception $e) {
+				die("Erreur de connexion à la base de données : " . $e->getMessage());
+			}
+		}
+		return $last;
+	}
+	/**
+	 * Fonction pour avoir une action de la timeline
+	 */
+	public function onceTimeline($table=null,$cols=null,$id): array{ 
+		$last = [];
+		if($table && $cols){
+			try {
+				if($table){
+					$query = "SELECT {$cols} FROM {$table}";
+					$stmt = $this->pdo->prepare($query);
+					$stmt->execute();
+					$last = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+				}
+				return $last;
+			} catch (\PDOException $e) {
+				die("Erreur de connexion à la base de données : " . $e->getMessage());
+			} catch (\Exception $e) {
+				die("Erreur de connexion à la base de données : " . $e->getMessage());
+			}
+		}
+		return $last;
 	}
 }

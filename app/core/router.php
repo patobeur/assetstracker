@@ -11,8 +11,6 @@ class Router
 
 	public function __construct($CheckDb,$Console) {
 		$this->Console = $Console;
-		$this->Console->addMsg(["content"=>'Router',"title"=>'Controller']);
-
 		$this->CheckDb = $CheckDb;
 		$this->pdo = $this->CheckDb->getPdo();
 	}

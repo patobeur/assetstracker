@@ -51,9 +51,7 @@
 		// Gérer le traitement de connexion
 		public function listEleves() {
 			$html = file_get_contents('../app/views/listes.php');
-			$content = '';			
 			
-			$content = '';
 			$sqlList = [];
 			$titles = [
 				"ID" => 'id',
@@ -75,6 +73,7 @@
 
 			$items = $this->CheckDb->list('eleves',implode(",", $sqlList));
 
+			$content = '';			
 			foreach ($items as $item) {
 					$content .= "<tr>";
 					foreach ($item as $value) {

@@ -1,2 +1,2 @@
-<h1>Profile</h1>
+<h1>{{TITLE}}</h1>
 {{CONTENT}}

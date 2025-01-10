@@ -1,2 +1,2 @@
-not fouuu<h1>{{TITLES}}</h1>
+<h1>{{TITLES}}</h1>
 {{CONTENT}}

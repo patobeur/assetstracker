@@ -8,7 +8,7 @@
 	$defaultUser = '';
 	$defaultDb = 'assetsTracker';
 
-	$defaultAdminPseudo = 'titi';
+	$defaultAdminPseudo = '';
 	$defaultAdminPasse = '';
 
 	$defaultAdminMail = 'admin@example.com';
@@ -112,11 +112,12 @@
 							birth TIMESTAMP,
 							etat VARCHAR(50),
 							typeasset_id INT,
+							position VARCHAR(10),
 							FOREIGN KEY (typeasset_id) REFERENCES typeassets(id) ON DELETE CASCADE ON UPDATE CASCADE
 						)",
-						"INSERT INTO pc (barrecode, model, serialnum, etat, typeasset_id) VALUES
-							('10000001', 'Dell Inspiron', 'SN12345', 'Disponible', 1),
-							('10000011', 'HP EliteBook', 'SN67890', 'En réparation', 1)",
+						"INSERT INTO pc (barrecode, model, serialnum, etat, typeasset_id, position) VALUES
+							('10000001', 'Dell Inspiron', 'SN12345', 'Disponible', 1, 'in'),
+							('10000011', 'HP EliteBook', 'SN67890', 'En réparation', 1, 'in')",
 						"CREATE TABLE IF NOT EXISTS eleves (
 							id INT AUTO_INCREMENT PRIMARY KEY,
 							barrecode VARCHAR(50) UNIQUE,
@@ -125,7 +126,9 @@
 							promo VARCHAR(50),
 							classe VARCHAR(50),
 							birth TIMESTAMP,
-							mail VARCHAR(255)
+							mail VARCHAR(255),
+							lastpcid INT NULL,
+							FOREIGN KEY (lastpcid) REFERENCES pc(id) ON DELETE CASCADE ON UPDATE CASCADE
 						)",
 						"INSERT INTO eleves (barrecode, nom, prenom, promo, classe, mail) VALUES
 							('00000001', 'Doe', 'John', '2426', 'BTSCOM', 'john.doe@example.com'),

@@ -58,7 +58,7 @@
 				}
 
 				if($this->pc && $this->eleve ){
-					$insertRespons = $this->CheckDb->insertTimeline($this->pc['id'], $this->eleve['id'], 'out') ;
+					$insertRespons = $this->CheckDb->insertTimelineOut($this->pc['id'], $this->eleve['id'], 'out') ;
 					$this->messages[]=$insertRespons?["content"=>"ENREGISTREMENT OK !","result"=>"succes"]:["content"=>"ENREGISTREMENT Raté  !","result"=>"succes"];
 
 				}
@@ -72,7 +72,7 @@
 				];
 				$contents['Redirect'] = [
 					'url'=> '/out?',
-					'refresh'=> CONFIG['WEBSITE']['refreshOut']
+					'refresh'=> CONFIG['REFRESH']['out']
 				];
 			}
 			else {
