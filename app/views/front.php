@@ -10,11 +10,10 @@
 	<link rel="stylesheet" href="/css/nav.css">
 	<link rel="stylesheet" href="/css/form.css">
 	<link rel="stylesheet" href="/css/console.css">
-	<link rel="stylesheet" href="/vendor/font-awesome/css/all.min.css">
 	{{backgroundCss}}
 	<script src="/js/JsBarcode.all.min.js"></script>
 	<script src="/js/clock.js" defer></script>
-	<script src="/js/falls.js" defer></script>
+	<script src="/vendor/feunico/js/feunico.js" defer></script>
 </head>
 
 <body class="night">
