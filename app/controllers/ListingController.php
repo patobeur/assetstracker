@@ -27,7 +27,7 @@
 				$theaders .= "<th>".$key."</th>";
 				$sqlList[] = $value;
 			}
-			$theaders .= "/<tr>";
+			$theaders .= "</tr>";
 
 			$items = $this->CheckDb->list('pc',implode(",", $sqlList));
 
@@ -111,7 +111,7 @@
 				$theaders .= "<th>".$key."</th>";
 				$sqlList[] = $value;
 			}
-			$theaders .= "/<tr>";
+			$theaders .= "</tr>";
 
 			$items = $this->CheckDb->list('timeline',implode(",", $sqlList));
 

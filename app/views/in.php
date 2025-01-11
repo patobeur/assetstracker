@@ -3,7 +3,6 @@
 		<form method="POST" action="in">
 			{{errors}}
 			<div class="blocs">
-				<!-- <label for="pass">Mot de passe Admin :</label> -->
 				{{msgpc}}
 				<svg id="barcodePC"></svg>
 				<div class="input-container">

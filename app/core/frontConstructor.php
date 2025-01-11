@@ -65,6 +65,6 @@ class FrontConstructor
 				$defaultStyle = "";
 				break;
 		}
-		$this->pageToDisplay = str_replace( "{{background}}", $defaultStyle, $this->pageToDisplay);
+		$this->pageToDisplay = str_replace( "{{backgroundCss}}", $defaultStyle, $this->pageToDisplay);
 	}
 }

@@ -11,34 +11,54 @@
 	.nav-top-ul {
 		list-style-type: none;
 		margin: 0;
-		padding: 0;
+		padding: 5px;
 		background-color: #2b2424;
 		display: flex;
 		align-items: center;
 		flex-direction: row;
 		width: 100%;
 		li {
+			.fa, .fa-solid, .fa-brands, .fa-regular{
+				color: white;
+			}
 			/* display: inline; */
 			white-space: nowrap;
 			padding: 5px 5px;
-			a {
+			a, a:active, a:visited {
 				color: white;
 				text-decoration: none;
 			}
 			&:hover {
 				background-color: white;
 				a {
-				color: #111;
+					color: #111;
+				}
+				.fa, .fa-solid, .fa-brands, .fa-regular{
+					color: #111;
 				}
 			}
-			&.deco {
+			&.on {
+				.fa, .fa-solid, .fa-brands, .fa-regular{
+					color: black
+				}
+				/* display: inline; */
+				white-space: nowrap;
+				padding: 5px 5px;
+				a {
+					color: rgb(255, 170, 170);
+				}
+			}
+			&.deco, &.login {
 				margin-left:auto;
 				background-color: #531616;
-				a {
+				a, .fa, .fa-solid, .fa-brands, .fa-regular{
 					color: rgb(255, 208, 0);
 				}
 				&:hover {
 					a {color: white;}
+					.fa, .fa-solid, .fa-brands, .fa-regular{
+						color: white;
+					}
 				}
 			}
 		}

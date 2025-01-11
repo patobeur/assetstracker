@@ -33,7 +33,7 @@ class Router
 	public function dispatch($url="")
 	{
 		if ($url==="") {$url="index";}
-		if (!isset($_SESSION['user'])) {$url="login";}
+		// if (!isset($_SESSION['user'])) {$url="login";}
 		if (!$this->pdo) {$url="index";}
 
 		$this->setdefaultPage();

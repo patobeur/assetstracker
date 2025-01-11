@@ -1,2 +1,5 @@
 public/install.save
 app/conf/dbconfig.php
+public/js/fall.js
+public/vendor
+.gitignore
