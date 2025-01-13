@@ -20,6 +20,7 @@
 				"Numéro de Série" => 'serialnum',
 				"État" => 'etat',
 				"Entrée" => 'birth',
+				"Position" => 'position'
 			];
 
 			$theaders = "<tr>";
@@ -34,7 +35,7 @@
 			foreach ($items as $item) {
 					$content .= "<tr>";
 					foreach ($item as $value) {
-						$content .= "<td>".$value."</td>";
+						$content .= "<td>".($value??'<em class="null">null</em>')."</td>";
 					}
 				$content .= "</tr>";
 			}
@@ -62,6 +63,7 @@
 				"classe" => 'classe',
 				"birth" => 'birth',
 				"mail" => 'mail',
+				"lastpcid" => 'lastpcid',
 			];
 
 			$theaders = "<tr>";
@@ -77,7 +79,7 @@
 			foreach ($items as $item) {
 					$content .= "<tr>";
 					foreach ($item as $value) {
-						$content .= "<td>".$value."</td>";
+						$content .= "<td>".($value??'<em class="null">null</em>')."</td>";
 					}
 				$content .= "</tr>";
 			}

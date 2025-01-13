@@ -227,6 +227,10 @@ class CheckDb
 					"class"=>'',
 					"birth"=>date("h:i:s")
 				]);
+				
+				$this->setPcPosition($idpc, $typeaction);	
+				$this->setEleveLastpcid($ideleves, $idpc, $typeaction);
+
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
 			} catch (\Exception $e) {
@@ -251,6 +255,7 @@ class CheckDb
 					"class"=>'',
 					"birth"=>date("h:i:s")
 				]);
+				$this->setPcPosition($idpc, $typeaction);	
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
 			} catch (\Exception $e) {
@@ -259,6 +264,44 @@ class CheckDb
 			return true;
 		}
 		return false;
+	}
+
+	
+	/**
+	 * Fonction pour mettre la position d'un pc a jour (in ou out)
+	 */
+	public function setPcPosition($id=false,$position=false){
+		if($id && $position){
+			try {
+				$query = "UPDATE pc SET position = :position WHERE id = :id";
+				$stmt = $this->pdo->prepare($query);
+				$stmt->bindParam(':id', $id, \PDO::PARAM_STR);
+				$stmt->bindParam(':position', $position, \PDO::PARAM_STR);
+				$stmt->execute();
+			} catch (\PDOException $e) {
+				die("Erreur d'enregistrement des données : " . $e->getMessage());
+			} catch (\Exception $e) {
+				die("Erreur d'enregistrement des données : " . $e->getMessage());
+			}
+		}
+	}
+	/**
+	 * Fonction pour mettre la position d'un pc a jour (in ou out)
+	 */
+	public function setEleveLastpcid($ideleve=false,$idpc=false, $typeaction=false){
+		if($idpc && $ideleve && $typeaction === 'out'){
+			try {
+				$query = "UPDATE eleves SET lastpcid = :lastpcid WHERE id = :id";
+				$stmt = $this->pdo->prepare($query);
+				$stmt->bindParam(':id', $ideleve, \PDO::PARAM_STR);
+				$stmt->bindParam(':lastpcid', $idpc, \PDO::PARAM_STR);
+				$stmt->execute();
+			} catch (\PDOException $e) {
+				die("Erreur d'enregistrement des données : " . $e->getMessage());
+			} catch (\Exception $e) {
+				die("Erreur d'enregistrement des données : " . $e->getMessage());
+			}
+		}
 	}
 
 	
