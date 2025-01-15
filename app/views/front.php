@@ -14,6 +14,7 @@
 	<script src="/js/JsBarcode.all.min.js"></script>
 	<script src="/js/clock.js" defer></script>
 	<script src="/vendor/feunico/js/feunico.js" defer></script>
+	<script src="/js/falls.js" defer></script>
 </head>
 
 <body class="night">

@@ -19,4 +19,5 @@ function barcode() {
 	}
 	else {svgpc.style.display = 'none';
 	}
+	if (codepc.value == "") codepc.focus();
 }

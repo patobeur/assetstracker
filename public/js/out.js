@@ -1,8 +1,16 @@
 // Exécuter la fonction après que la page est complètement chargée
 document.addEventListener('DOMContentLoaded', () => {
+	// focusInputs()
 	barcodeEleve()
 });
 
+function focusInputs() {
+	let codeeleve = document.getElementById('codeeleve');
+	let codepc = document.getElementById('codepc');
+	if (codeeleve.value != "" && codepc.value == "") codepc.focus();
+	if (codeeleve.value == "" && codepc.value != "") codeeleve.focus();
+	if (codeeleve.value == "" && codepc.value == "") codeeleve.focus();
+}
 // Fonction qui met à jour la date et l'heure
 function barcodeEleve() {
 	let codeeleve = document.getElementById('codeeleve');
@@ -23,6 +31,7 @@ function barcodeEleve() {
 	else {
 		svgeleve.style.display = 'none';
 	}
+
 	if (codepc && codepc.value != ""){
 		JsBarcode("#barcodePC", codepc.value, format);
 	}
@@ -32,4 +41,5 @@ function barcodeEleve() {
 
 	if (codeeleve.value != "" && codepc.value == "") codepc.focus();
 	if (codeeleve.value == "" && codepc.value != "") codeeleve.focus();
+	if (codeeleve.value == "" && codepc.value == "") codeeleve.focus();
 }

@@ -37,5 +37,5 @@ liste à mettre à jour
 - [x] pages in et out fonctionnelles ?
 - [x] sauvegardes opérationnelles des entrés sorties dans table 'timeline'.
 - [x] console des entrées, sorties, et bug en place et opérationnelle.
-- [x] insertion d'un champ 'lastpcid' dans la table 'eleve' pour tracer le dernier pc utilisé. (FK avec 'id' dans la table 'pc')
+- [x] insertion d'un champ 'lastpc_id' dans la table 'eleve' pour tracer le dernier pc utilisé. (FK avec 'id' dans la table 'pc')
 - [x] insertion d'un champ 'position' dans la table 'pc' pour tracer la derniere opération.

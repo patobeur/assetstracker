@@ -20,7 +20,8 @@
 				"Numéro de Série" => 'serialnum',
 				"État" => 'etat',
 				"Entrée" => 'birth',
-				"Position" => 'position'
+				"Position" => 'position',
+				"Last" => 'lasteleve_id',
 			];
 
 			$theaders = "<tr>";
@@ -62,8 +63,8 @@
 				"promo" => 'promo',
 				"classe" => 'classe',
 				"birth" => 'birth',
-				"mail" => 'mail',
-				"lastpcid" => 'lastpcid',
+				// "mail" => 'mail',
+				"lastpc_id" => 'lastpc_id'
 			];
 
 			$theaders = "<tr>";
@@ -71,6 +72,7 @@
 				$theaders .= "<th>".$key."</th>";
 				$sqlList[] = $value;
 			}
+			$theaders .= "<th>Action</th>";
 			$theaders .= "</tr>";
 
 			$items = $this->CheckDb->list('eleves',implode(",", $sqlList));
@@ -81,6 +83,7 @@
 					foreach ($item as $value) {
 						$content .= "<td>".($value??'<em class="null">null</em>')."</td>";
 					}
+					$content .= '<td><i class="ico github"></i><a href="/eleve?num='.$item['id'].'">'.$item['id'].'</a></td>';
 				$content .= "</tr>";
 			}
 			
@@ -94,8 +97,6 @@
 			];
 		}
 
-
-		
 		// Gérer le traitement de connexion
 		public function listTimeline() {
 			$html = file_get_contents('../app/views/listes.php');
@@ -106,7 +107,7 @@
 				"idpc" => 'idpc',
 				"ideleves" => 'ideleves',
 				"typeaction" => 'typeaction',
-				"Date" => 'birth',
+				"Date" => 'birth'
 			];
 			$theaders = "<tr>";
 			foreach ($titles as $key => $value) {

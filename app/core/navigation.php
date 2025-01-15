@@ -34,6 +34,7 @@ class Navigation
 				'classIco'=> 'fa-regular fa-circle-down',
 				'hiddenIfUrl'=> false,
 				'href'=> '/in',
+				'class'=> 'in',
 				'needLog'=> true,
 				'lv'=> 1,
 			],
@@ -44,6 +45,7 @@ class Navigation
 				'classIco'=> 'fa-regular fa-circle-up',
 				'hiddenIfUrl'=> false,
 				'href'=> '/out',
+				'class'=> 'out',
 				'needLog'=> true,
 				'lv'=> 1,
 			],
@@ -74,6 +76,7 @@ class Navigation
 				'classIco'=> 'fa-solid fa-heart-pulse',
 				'hiddenIfUrl'=> false,
 				'href'=> '/timeline',
+				'class'=> 'timeline',
 				'needLog'=> true,
 				'lv'=> 1,
 			],
@@ -147,7 +150,7 @@ class Navigation
 		$needUnlog = $this->menus[$index]['needUnlog'] ?? false;
 		$requestUrl = $this->menus[$index]['url'];
 		$requestClass = $this->menus[$index]['class'] ?? '';
-		$requestHref = $this->menus[$index]['href'] ? " href=".$this->menus[$index]['href'] : "";
+		$requestHref = $this->menus[$index]['href'] ? ' title="'.$this->menus[$index]['url'].'" href='.$this->menus[$index]['href'] : '' ;
 		$requestcontent = $this->menus[$index]['content'];
 		$url = $this->url;
 
@@ -158,11 +161,19 @@ class Navigation
 		}
 		$liClass= "";
 		if($display && !($needLog && !isset($_SESSION['user'])) && !($needUnlog && isset($_SESSION['user'])) ){
+			//class
 			$requestClass .= ($url===$requestUrl ? ' class="on"':'');
 			$requestClass = $requestClass != '' ? ' class="'.$requestClass.'"' : '';
-			$liClass = '<li'.$requestClass.'>';
+			//title
+			$title = $this->menus[$index]['href'] ? " title=\"".$this->menus[$index]['url']."\"" : "";
+			//onclick
+			$onclick = $this->menus[$index]['href'] ? " onclick=\"location.href='".$this->menus[$index]['href']."'\"" : "";
+			//href
+			$href = $this->menus[$index]['href'] ? ' href="'.$this->menus[$index]['href'].'"' : '';
+
+			$liClass = '<li'.$requestClass.$title.$onclick.'>';
 			$liClass .= '<i class="ico ico-'.$requestUrl.'"></i>';
-			$liClass .= '<a '.$requestHref.'>';
+			$liClass .= '<a'. $title.$href.'>';
 			$liClass .= $requestcontent;
 			$liClass .= '</a>';
 			$liClass .= '</li>';

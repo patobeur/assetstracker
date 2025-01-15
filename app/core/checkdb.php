@@ -228,7 +228,7 @@ class CheckDb
 					"birth"=>date("h:i:s")
 				]);
 				
-				$this->setPcPosition($idpc, $typeaction);	
+				$this->setPcPosition($ideleves, $idpc, $typeaction);
 				$this->setEleveLastpcid($ideleves, $idpc, $typeaction);
 
 			} catch (\PDOException $e) {
@@ -255,7 +255,7 @@ class CheckDb
 					"class"=>'',
 					"birth"=>date("h:i:s")
 				]);
-				$this->setPcPosition($idpc, $typeaction);	
+				$this->setPcPosition(false, $idpc, $typeaction);
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
 			} catch (\Exception $e) {
@@ -270,13 +270,17 @@ class CheckDb
 	/**
 	 * Fonction pour mettre la position d'un pc a jour (in ou out)
 	 */
-	public function setPcPosition($id=false,$position=false){
+	public function setPcPosition($ideleves=false,$id=false,$position=false){
 		if($id && $position){
 			try {
-				$query = "UPDATE pc SET position = :position WHERE id = :id";
+				$sqlTxt = "position = :position";
+				$sqlTxt .= $ideleves ? ", lasteleve_id = :lasteleve_id" : '';
+
+				$query = "UPDATE pc SET ".$sqlTxt." WHERE id = :id";
 				$stmt = $this->pdo->prepare($query);
 				$stmt->bindParam(':id', $id, \PDO::PARAM_STR);
 				$stmt->bindParam(':position', $position, \PDO::PARAM_STR);
+				if($ideleves) $stmt->bindParam(':lasteleve_id', $ideleves, \PDO::PARAM_INT);
 				$stmt->execute();
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
@@ -291,10 +295,10 @@ class CheckDb
 	public function setEleveLastpcid($ideleve=false,$idpc=false, $typeaction=false){
 		if($idpc && $ideleve && $typeaction === 'out'){
 			try {
-				$query = "UPDATE eleves SET lastpcid = :lastpcid WHERE id = :id";
+				$query = "UPDATE eleves SET lastpc_id = :lastpc_id WHERE id = :id";
 				$stmt = $this->pdo->prepare($query);
 				$stmt->bindParam(':id', $ideleve, \PDO::PARAM_STR);
-				$stmt->bindParam(':lastpcid', $idpc, \PDO::PARAM_STR);
+				$stmt->bindParam(':lastpc_id', $idpc, \PDO::PARAM_STR);
 				$stmt->execute();
 			} catch (\PDOException $e) {
 				die("Erreur d'enregistrement des données : " . $e->getMessage());
