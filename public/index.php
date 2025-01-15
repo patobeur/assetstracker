@@ -11,7 +11,7 @@
 			'in' => 2,
 			'out' => 2
 		],
-		'PROD' => false, // 0 en dev, 1 en prod
+		'PROD' => false, // false en dev, true en prod
 	]);
 	
 	require_once '../app/core/autoloader.php';
@@ -26,25 +26,33 @@
 	$router = new Router(CheckDb: $CheckDb,Console: $Console);
 	
 	// Définition des routes
-	$router->add(route: 'login', action: 'AuthController@login');
-	$router->add(route: 'index',action: 'IndexController@showIndex@null');
-	$router->add(route: 'login',action: 'LoginController@handleLogin@db');
-	$router->add(route: 'logout',action: 'LoginController@logout@null');
-	$router->add(route: 'profile',action: 'ProfileController@showProfile@null');
-	$router->add(route: 'listpc',action: 'ListingController@listPc@db');
-	$router->add(route: 'listeleves',action: 'ListingController@listEleves@db');
-	$router->add(route: 'timeline',action: 'ListingController@listTimeline@db');
-	$router->add(route: 'out',action: 'OutController@handle@db');
-	$router->add(route: 'in',action: 'InController@handle@db');
+	$router->add(route: 'index',action: 'IndexController@showIndex@null@0');
+	$router->add(route: 'login',action: 'LoginController@handleLogin@db@0');
+	if (isset($_SESSION['user'])) {
+		$router->add(route: 'profile',action: 'ProfileController@showProfile@null@1');
+		$router->add(route: 'listpc',action: 'ListingController@listPc@db@1');
+		$router->add(route: 'listeleves',action: 'ListingController@listEleves@db@1');
+		$router->add(route: 'timeline',action: 'ListingController@listTimeline@db@1');
+		$router->add(route: 'out',action: 'OutController@handle@db@1');
+		$router->add(route: 'in',action: 'InController@handle@db@1');
+		$router->add(route: 'logout',action: 'LoginController@logout@null@1');
+	}
 
 	$frontConstructor = new FrontConstructor(Console: $Console);
 
 	// Récupération de l'URL
 	$url = trim(string: parse_url(url: $_SERVER['REQUEST_URI'], component: PHP_URL_PATH), characters: '/');
 
-	$content = $router->dispatch(url: $url);
+	$contents = $router->dispatch(url: $url);
 
-	$pageToDisplay = $frontConstructor->getPageToDisplay(url: $url,stack: [$content]);
+	if(isset($contents['url'])) $url = $contents['url']; 
+
+	$content = $contents['content'];
+
+	// à découper en 2
+	$frontConstructor->addContentToStack($content);
+	$frontConstructor->addContentToStack(['TITLE' => "en plus",'CONTENT'   => '<h3>en plusss</h3>']);
+	$pageToDisplay = $frontConstructor->getPageToDisplay($url);
 
 	if(isset($content['Redirect'])){
 		$newurl = $content['Redirect']['url'];

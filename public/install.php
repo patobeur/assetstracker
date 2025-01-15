@@ -5,11 +5,11 @@
 	
 	$dbConfigPath = '../app/conf/dbconfig.php';
 	$defaultHost = 'localhost';
-	$defaultUser = '';
+	$defaultUser = 'root';
 	$defaultDb = 'assetsTracker';
 
-	$defaultAdminPseudo = '';
-	$defaultAdminPasse = '';
+	$defaultAdminPseudo = 'titi';
+	$defaultAdminPasse = 'toto';
 
 	$defaultAdminMail = 'admin@example.com';
 	$defaultAdminPrenom = 'admin';
@@ -83,8 +83,9 @@
 							content VARCHAR(100)
 						)",
 						"INSERT INTO typeaccounts  (id, content) VALUES 
-							(1, 'master'),
-							(2, 'supermaster')",
+							(1, 'admin'),
+							(2, 'superadmin'),
+							(3, 'hyperadmin')",
 						"CREATE TABLE IF NOT EXISTS administrateurs (
 							id INT AUTO_INCREMENT PRIMARY KEY,
 							pseudo VARCHAR(100) NOT NULL UNIQUE,
@@ -156,15 +157,30 @@
 					}
 
 					// Création du fichier dbconfig.php
+					$host = 'http://' . $_SERVER['HTTP_HOST'];
+					$sitedir = stripslashes(dirname($_SERVER['PHP_SELF']));
 					$configContent = <<<PHP
 <?php
 	\$dbHost = '$dbHost';
 	\$dbName = '$dbName';
 	\$dbUser = '$dbUser';
 	\$dbPassword = '$dbPassword';
-	\$version = 0.1;
+	\$version = 0.2;
 PHP;
 
+
+// define('CONFIG', [
+// 	'WEBSITE' => [
+// 		'header' => 'Content-type: text/html; charset=UTF-8',
+// 		'siteurl' => '$host',
+// 		'sitedir' => '$sitedir',
+// 	],
+// 	'REFRESH' => [
+// 		'in' => 2,
+// 		'out' => 2
+// 	],
+// 	'PROD' => false, // false en dev, true en prod
+// ]);
 					file_put_contents($dbConfigPath, $configContent);
 
 					// Supprime ce fichier
@@ -352,7 +368,7 @@ PHP;
 				<label for="pass">Mot de passe Admin :</label>
 				<div class="input-container">
 					<span class="icon">🔒</span>
-					<input type="password" id="adminpass" name="adminpass" style="padding-right: 30px;">
+					<input type="password" id="adminpass" name="adminpass" style="padding-right: 30px;"  value="<?php echo $defaultAdminPseudo; ?>">
 					<span id="toggleAdminPass" style="position: absolute;top: 50%;right: 10px;transform: translateY(-50%);cursor: pointer;color: #999;">&#128065;</span>
 				</div>
 			</div>

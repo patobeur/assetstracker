@@ -6,6 +6,7 @@ class FrontConstructor
 {
 	private $pageToDisplay;
 	private $Console;
+	private $contentStack = [];
 	private $Navigation;
 
 	public function __construct($Console) {
@@ -15,8 +16,10 @@ class FrontConstructor
 		$this->pageToDisplay = file_get_contents(filename: '../app/views/front.php');
 	}
 
-	public function addContent($stack=[]): void
+	public function addContent(): void
 	{
+		$stack = $this->contentStack;
+		
 		if (count($stack)>0){
 			$contents = '';
 			for ($i=0; $i < count($stack) ; $i++) {
@@ -41,12 +44,18 @@ class FrontConstructor
 		$this->pageToDisplay = $this->Console->addConsole($this->pageToDisplay);
 	}
 
-	public function getPageToDisplay($url,$stack=[]): string
+	public function addContentToStack($content = [])
 	{
-		// $this->addNavigation(url: $url);
-		
-		$this->addContent(stack: $stack);
+		// if(count($content)> 0){
+			$this->contentStack[] = $content;
+		// }
+	}
+
+	public function getPageToDisplay($url): string
+	{
+		$this->addContent();
 		$this->addBodyBackground(url: $url);
+		
 
 		$this->addConsole();
 		$this->pageToDisplay = $this->Navigation->addNavigation($this->pageToDisplay, $url);

@@ -46,26 +46,28 @@ class Router
 
 			if (class_exists($controller) && method_exists($controller, $method)) {
 				$controllerInstance = new $controller($db==="db"?$this->CheckDb:null);
-				return $controllerInstance->$method();
+				return [
+					'content'=>$controllerInstance->$method()
+				];
 			} else {
-				
-				return $this->notFound();
+				return [
+					'content'=>$this->notFound(false)
+				];
 			}
 		} else {
-			return $this->notFound();
+			return [
+				'url'=>'404',
+				'content'=>$this->notFound(true)
+			];
 		}
 	}
 
-	private function notFound()
+	private function notFound($boule)
 	{		
 		$notFoundController = "app\\controllers\\NotFoundController";
-
-		if (class_exists($notFoundController) && method_exists($notFoundController, 'showIndex')) {
-			$controllerInstance = new $notFoundController();
-			$content = $controllerInstance->showIndex();
-			// http_response_code(404);
-			return $content;
-		}
-		else {die('404');}
+		$notFound = new $notFoundController();
+		$content = $notFound->showIndex($boule);
+		// http_response_code(404);
+		return $content;
 	}
 }
