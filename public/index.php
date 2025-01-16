@@ -1,18 +1,6 @@
 <?php
 	session_start();
 
-	define('CONFIG', [
-		'WEBSITE' => [
-			'header' => 'Content-type: text/html; charset=UTF-8',
-			'siteurl' => 'http://' . $_SERVER['HTTP_HOST'],
-			'sitedir' => dirname($_SERVER['PHP_SELF']),
-		],
-		'REFRESH' => [
-			'in' => 2,
-			'out' => 2
-		],
-		'PROD' => false, // false en dev, true en prod
-	]);
 	
 	require_once '../app/core/autoloader.php';
 
@@ -21,13 +9,18 @@
 	use app\core\router;
 	use app\core\frontConstructor;
 
-	$Console = new Console(active: true);
-	$CheckDb = new CheckDb(Console: $Console);
-	$router = new Router(CheckDb: $CheckDb,Console: $Console);
+	$Console = new Console(true);
+	$CheckDb = new CheckDb($Console);
+	$router = new Router($CheckDb,$Console);
 	
 	// Définition des routes
+	// c'est ici que l'on ajoutera les page de l'app
+
 	$router->add(route: 'index',action: 'IndexController@showIndex@null@0');
 	$router->add(route: 'login',action: 'LoginController@handleLogin@db@0');
+	$router->add(route: 'client',action: 'ClientController@showClient@db@1');
+
+	// c'est ici que l'on ajoutera les pages accessible si loggué 
 	if (isset($_SESSION['user'])) {
 		$router->add(route: 'profile',action: 'ProfileController@showProfile@null@1');
 		$router->add(route: 'listpc',action: 'ListingController@listPc@db@1');

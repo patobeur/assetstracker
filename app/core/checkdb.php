@@ -20,19 +20,17 @@ class CheckDb
 
 		if (!$dbConfigExiste && $installExiste) {
 
-			// dbConfig.php exite mais install.php aussi ;(
-			// si dbConfig.php n'exite pas mais que install.php existe 
-			// on lance l'install
-			header(header: 'Location: install.php'); // Redirige vers la l'installation
+			// si dbConfig.php n'exite pas mais que install.php existe on lance l'install
+			header(header: 'Location: install.php');
 			die();
 		}
 		if ($dbConfigExiste && $installExiste) {
 			// dbConfig.php exite mais install.php aussi ;(
 			
-			if(CONFIG['PROD']){
-				die("En mode PROD, 'dbconfig.php' et 'install.php' ne devraient pas exister en même temps ??");
-			}
-			else {
+			// if(CONFIG['PROD']){
+			// 	die("En mode PROD, 'dbconfig.php' et 'install.php' ne devraient pas exister en même temps ??");
+			// }
+			// else {
 				$dbErrors = $this->checkDb();
 				if(count($dbErrors)>0) {
 					echo "La bdd n'existe pas, regardez votre dbConfig ?";
@@ -44,7 +42,7 @@ class CheckDb
 					"class"=>'alerte',
 					"birth"=>date("h:i:s")
 				]);
-			}
+			// }
 		}
 		elseif ($dbConfigExiste && !$installExiste) {
 			$dbErrors = $this->checkDb();

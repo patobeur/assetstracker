@@ -168,21 +168,22 @@
 	\$dbUser = '$dbUser';
 	\$dbPassword = '$dbPassword';
 	\$version = 0.2;
+	
+	define('CONFIG', [
+		'WEBSITE' => [
+			'header' => 'Content-type: text/html; charset=UTF-8',
+			'siteurl' => '$host',
+			'sitedir' => '$sitedir',
+		],
+		'REFRESH' => [
+			'in' => 2,
+			'out' => 2
+		],
+		'PROD' => false, // false en dev, true en prod
+	]);
 PHP;
 
 
-// define('CONFIG', [
-// 	'WEBSITE' => [
-// 		'header' => 'Content-type: text/html; charset=UTF-8',
-// 		'siteurl' => '$host',
-// 		'sitedir' => '$sitedir',
-// 	],
-// 	'REFRESH' => [
-// 		'in' => 2,
-// 		'out' => 2
-// 	],
-// 	'PROD' => false, // false en dev, true en prod
-// ]);
 
 
 					file_put_contents($dbConfigPath, $configContent);
