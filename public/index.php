@@ -63,4 +63,5 @@
 	if (!headers_sent()) {
 		header(header: CONFIG['WEBSITE']['header']);
 	}
+	
 	echo $pageToDisplay;
