@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function createClock() {
 	let clock = document.createElement('div');
 	clock.id = 'clock'
+	clock.className = 'clock'
 	clock.style.zIndex = '999'
 	clock.style.position = 'absolute'
 	clock.style.bottom = '0'
-	clock.style.left = '0'
 	clock.style.padding = '0 0 10px 10px'
 	document.body.appendChild(clock);
 	return clock;

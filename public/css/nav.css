@@ -1,7 +1,5 @@
 .nav-top {
-	font-family: 'Courier New', Courier, monospace;
-	font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-	font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	font-family: var(--font-family-sans-serif);
 	font-size: 1.2rem;
 	font-weight: 600;
 	position: absolute;
@@ -11,7 +9,7 @@
 	display: flex;
 	flex-direction: row;
 	padding: 0;
-	background-color: #3e4042;
+	background-color: #3e4042c2;
 	width: 100%;
 	.nav-top-brand {
 		width: 30px;
@@ -41,12 +39,14 @@
 			margin-right: 5px;
 			transition: transform .2s ease-out;
 			img {
-				margin-right: 5px;
+				width:20px;
+				aspect-ratio: 1/1;
 			}
 			/* display: inline; */
 			white-space: nowrap;
 			padding: 5px 5px;
 			a, a:active, a:visited {
+				margin-left: 5px;
 				color: white;
 				text-decoration: none;
 			}
@@ -63,8 +63,9 @@
 				/* display: inline; */
 				white-space: nowrap;
 				padding: 5px 5px;
+				background-color: #1a1a1d;
 				a {
-					color: rgb(255, 170, 170);
+					color: rgb(152, 189, 18);
 				}
 			}
 			&.timeline {
@@ -80,22 +81,36 @@
 				}
 			}
 			&.deco, &.login {
-				margin-left:auto;
+				margin-left:auto; */
 				background-color: #531616;
 				a{
 					color: rgb(255, 208, 0);
 				}
 				&:hover {
-					a {color: white;}
+					a {
+						color: white;
+					}
 					img {
 						filter: initial;
 					}
 				}
 			}
+			&.right {
+				margin-left:auto;
+			}
 			/* &:last-child:not(''){
 				margin-left:auto;
 			} */
+			&.hidea{
+				a {
+					display: none;
+				}
+			}
 		}
+	}
+	.clock{
+		left: 0;
+		transition: left 1s ease;
 	}
 }
 
@@ -107,13 +122,11 @@
 					img {
 						margin-right: 0;
 					}
-					a {
-						display: none;
-					}
 				}
 			}
 		}
 	}
+	
 }
 
 @media (max-width: 1100px) {
@@ -177,13 +190,27 @@
 					}
 					a {
 						color: rgb(255, 208, 0);
-						display: flex;
 					}
 					&:hover{
 						background-color: #7e1a1a;
+						a {
+							display: initial;
+						}
+					}
+				}
+				&.hidea {
+					a {
+						display: flex;
 					}
 				}
 			}
 		}
     }
+	body .container {
+		padding-left: 50px;
+		padding-top: 10px;
+	}
+	.clock{
+		left: 40px;
+	}
 }

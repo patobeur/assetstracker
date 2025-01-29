@@ -1,6 +1,5 @@
 // Exécuter la fonction après que la page est complètement chargée
 document.addEventListener('DOMContentLoaded', () => {
-	// focusInputs()
 	barcodeEleve()
 });
 
@@ -15,8 +14,10 @@ function focusInputs() {
 function barcodeEleve() {
 	let codeeleve = document.getElementById('codeeleve');
 	let codepc = document.getElementById('codepc');
+
 	let svgpc = document.getElementById('barcodePC');
 	let svgeleve = document.getElementById('barcodeEleve');
+
 	let format = {
 		format: "CODE128",	// Format du code-barres
 		lineColor: "#000",	// Couleur des lignes
@@ -25,21 +26,20 @@ function barcodeEleve() {
 		displayValue: true	// Afficher la valeur sous le code-barres
 	}
 
-	if (codeeleve && codeeleve.value != ""){
+	if (codeeleve && svgeleve.style.display!='none' && codeeleve.value != ""){
+		console.log('gobarcodeEleve')
 		JsBarcode("#barcodeEleve", codeeleve.value, format);
 	}
 	else {
 		svgeleve.style.display = 'none';
 	}
 
-	if (codepc && codepc.value != ""){
+	if (codepc && svgpc.style.display!='none' && codepc.value != ""){
+		console.log('gobarcodePC')
 		JsBarcode("#barcodePC", codepc.value, format);
 	}
 	else {
 		svgpc.style.display = 'none';
 	}
-
-	if (codeeleve.value != "" && codepc.value == "") codepc.focus();
-	if (codeeleve.value == "" && codepc.value != "") codeeleve.focus();
-	if (codeeleve.value == "" && codepc.value == "") codeeleve.focus();
+	focusInputs()
 }

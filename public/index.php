@@ -1,7 +1,5 @@
 <?php
 	session_start();
-
-	
 	require_once '../app/core/autoloader.php';
 
 	use app\core\console;
@@ -10,44 +8,31 @@
 	use app\core\frontConstructor;
 
 	$Console = new Console(true);
-	$CheckDb = new CheckDb($Console);
+	$CheckDb = new CheckDb($Console); // lance checkInstallAndConfig
 	$router = new Router($CheckDb,$Console);
-	
-	// Définition des routes
-	// c'est ici que l'on ajoutera les page de l'app
-
-	$router->add(route: 'index',action: 'IndexController@showIndex@null@0');
-	$router->add(route: 'login',action: 'LoginController@handleLogin@db@0');
-	$router->add(route: 'client',action: 'ClientController@showClient@db@1');
-
-	// c'est ici que l'on ajoutera les pages accessible si loggué 
-	if (isset($_SESSION['user'])) {
-		$router->add(route: 'profile',action: 'ProfileController@showProfile@null@1');
-		$router->add(route: 'listpc',action: 'ListingController@listPc@db@1');
-		$router->add(route: 'listeleves',action: 'ListingController@listEleves@db@1');
-		$router->add(route: 'timeline',action: 'ListingController@listTimeline@db@1');
-		$router->add(route: 'out',action: 'OutController@handle@db@1');
-		$router->add(route: 'in',action: 'InController@handle@db@1');
-		$router->add(route: 'logout',action: 'LoginController@logout@null@1');
-	}
-
 	$frontConstructor = new FrontConstructor(Console: $Console);
 
 	// Récupération de l'URL
 	$url = trim(string: parse_url(url: $_SERVER['REQUEST_URI'], component: PHP_URL_PATH), characters: '/');
 
-	$contents = $router->dispatch(url: $url);
+	// récupération des blocs à afficher en fonction de l'url
+	$contentDatas = $router->dispatch(url: $url);
 
-	if(isset($contents['url'])) $url = $contents['url']; 
+	// récuperation de l'url retournée le cas échéant
+	if(isset($contentDatas['url'])) $url = $contentDatas['url']; 
 
-	$content = $contents['content'];
-
-	// à découper en 2
+	$content = $contentDatas['content'];
+	// on ajoute le contenu au front
 	$frontConstructor->addContentToStack($content);
-	$frontConstructor->addContentToStack(['TITLE' => "en plus",'CONTENT'   => '<h3>en plusss</h3>']);
+
+	// on pourrais en rajouter à la main aussi
+	// $frontConstructor->addContentToStack(['TITLE' => "en plus",'CONTENT'   => '<h3>un test en plus ?</h3>']);
+	
+	// on récupère la page construite avec l'url d'origine
 	$pageToDisplay = $frontConstructor->getPageToDisplay($url);
 
-	if(isset($content['Redirect'])){
+	// récuperation d'un 'Redirect' le cas échéant
+	if(isset($content['Redirect']) && $content['Redirect'] && isset($content['Redirect']['url'])){
 		$newurl = $content['Redirect']['url'];
 		$delay = $content['Redirect']['refresh'];
 		$redirect = 'refresh:'.$delay.';url='.$newurl;
@@ -56,5 +41,5 @@
 	if (!headers_sent()) {
 		header(header: CONFIG['WEBSITE']['header']);
 	}
-	
+	// on affiche la page
 	echo $pageToDisplay;

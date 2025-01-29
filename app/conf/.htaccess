@@ -1,0 +1,2 @@
+Allow from gestionaccueil_dev.pedagogie.lan
+Require host gestionaccueil_dev.pedagogie.lan

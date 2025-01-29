@@ -68,7 +68,14 @@ class FrontConstructor
 		$defaultStyle = "";
 		switch ($url) {
 			case 'login':
-				$defaultStyle = "<style>body {background: url('/img/login.webp');}</style>";
+				$defaultStyle = "<style>body {background-image: var(--loginBg);}</style>";
+				break;
+			case 'notfound':
+				$defaultStyle = "<style>body {background-image: var(--notfoundBg);}</style>";
+				break;
+			case '':
+			case 'index':
+				$defaultStyle = "<style>body {background-image: var(--defaultBg);}</style>";
 				break;
 			default:
 				$defaultStyle = "";

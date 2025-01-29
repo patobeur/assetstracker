@@ -8,7 +8,7 @@
 		private $msg = [];
 		private $msgOnce = [];
 		private $active = false;
-		private $vue = '<div class="console">{{console}}</div>';
+		private $vue = '<div class="console hidden" id="console">{{console}}</div>';
 
 		public function __construct($active=false) {
 			if(!isset($_SESSION['msg'])){
@@ -18,9 +18,11 @@
 		}
 	
 		public function addMsgSESSION($datas): void {
+			$datas['birth'] = date("H:i:s");
 			$_SESSION['msg'][] = $datas;
 		}
 		public function addMsg($datas): void {
+			$datas['birth'] = date("H:i:s");
 			$this->msg[] = $datas;
 		}
 
@@ -42,15 +44,16 @@
 						$pack = "<p{$class}>".($this->msg[$i]['title']??'?').": ";
 						$pack .= "".$this->msg[$i]['content'];
 						$pack .= " (".$this->msg[$i]['birth'].")</p>";
+						
 						$this->vue = str_replace(search: "{{console{$i}}}",replace: $pack,subject: $this->vue);
 					}
 				}
 				else {
-					$this->vue = str_replace(search: "{{console}}",replace: "♥",subject: $this->vue);
+					$this->vue = str_replace(search: "{{console}}",replace: "",subject: $this->vue);
 				}
-				$this->defaultPage = str_replace(search: "{{console}}",replace: $this->vue,subject: $this->defaultPage);
+				$this->defaultPage = str_replace(search: "{{console}}",replace: $this->vue, subject: $this->defaultPage);
 			} else {
-				$this->defaultPage = str_replace(search: "{{console}}",replace: '',subject: $this->defaultPage);
+				$this->defaultPage = str_replace(search: "{{console}}",replace: '', subject: $this->defaultPage);
 			}
 			return $this->defaultPage;
 		}

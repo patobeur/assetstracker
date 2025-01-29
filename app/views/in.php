@@ -3,11 +3,17 @@
 		<form method="POST" action="in">
 			{{errors}}
 			<div class="blocs">
-				{{msgpc}}
-				<svg id="barcodePC"></svg>
+				<div class="cards">
+					<div>
+						{{msgpc}}
+					</div>
+					<div>
+						<svg id="barcodePC"></svg>
+					</div>
+				</div>
 				<div class="input-container">
 					<span class="icon">🔒</span>
-					<input type="text" id="codepc" name="pc" placeholder="codebarre pc" value="{{pcbarrecode}}">
+					<input type="text" id="codepc" name="pc" placeholder="codebarre pc" autofocus>
 				</div>
 			</div>
 			<div class="blocs center">
@@ -15,4 +21,5 @@
 			</div>
 		</form>
 	</div>
-	<script src="/js/in.js" defer></script>
+	<script src="/vendor/JsBarcode/JsBarcode.all.min.js"></script>
+	<script defer type="module" src="/js/in.js"></script>

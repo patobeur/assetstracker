@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function barcode() {
 	let codepc = document.getElementById('codepc');
 	let svgpc = document.getElementById('barcodePC');
+
 	let format = {
 		format: "CODE128",	// Format du code-barres
 		lineColor: "#000",	// Couleur des lignes

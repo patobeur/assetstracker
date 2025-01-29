@@ -17,5 +17,6 @@
             }
         }
         userok.addEventListener('input', toggleSubmitButton);
-        passok.addEventListener('input', toggleSubmitButton);		
+        passok.addEventListener('input', toggleSubmitButton);
+        
     </script>

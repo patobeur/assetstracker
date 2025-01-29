@@ -38,7 +38,7 @@
 							$this->eleve = $row[0];
 						}
 						else {
-							$this->messages[]=["content"=>"BarreCode élève introuvable !","result"=>"alerte"];
+							$this->messages[]=["content"=>"BarreCode élève introuvable !","result"=>"error"];
 						}
 					}
 				}
@@ -58,9 +58,10 @@
 				}
 
 				if($this->pc && $this->eleve ){
-					$insertRespons = $this->CheckDb->insertTimelineOut($this->pc['id'], $this->eleve['id'], 'out') ;
-					$this->messages[]=$insertRespons?["content"=>"ENREGISTREMENT OK !","result"=>"succes"]:["content"=>"ENREGISTREMENT Raté  !","result"=>"succes"];
-
+					$insertRespons = $this->insertTimelineOut($this->pc['id'], $this->eleve['id'], 'out') ;
+					$this->messages[] = $insertRespons
+						?["content"=>"ENREGISTREMENT OK !","result"=>"succes"]
+						:["content"=>"ENREGISTREMENT Raté  !","result"=>"succes"];
 				}
 			}
 			if($this->pc && $this->eleve ){
@@ -86,6 +87,39 @@
 
 			return $contents;
 		}
+
+		public function insertTimelineOut($idpc, $ideleves=null, $typeaction) { 
+			
+			if(($ideleves && $idpc) || (gettype($ideleves)==='null' && $idpc) ) {
+				try {
+					$birth = date(format: "y-m-d H:i:s");
+					$query = "INSERT INTO timeline (idpc, ideleves, typeaction, birth) VALUES (:idpc, :ideleves, :typeaction, :birth)";
+					$stmt = $this->pdo->prepare($query);
+					$stmt->bindParam(':ideleves', $ideleves, \PDO::PARAM_STR);
+					$stmt->bindParam(':idpc', $idpc, \PDO::PARAM_STR);
+					$stmt->bindParam(':typeaction', $typeaction, \PDO::PARAM_STR);
+					$stmt->bindParam(':birth', $birth, \PDO::PARAM_STR);
+					$stmt->execute(); 
+					$this->CheckDb->Console->addMsgSESSION([
+						"content"=>"Élève {$ideleves} et PC {$idpc}",
+						"title"=>'⬅️',
+						"class"=>'',
+						"birth"=>$birth
+					]);
+					
+					$used = (int)$this->pc['used']+1;
+					$this->CheckDb->setPcPosition($ideleves, $idpc, $typeaction, $used, $birth);
+					$this->CheckDb->setEleveLastpcid($ideleves, $idpc, $typeaction, $birth);
+	
+				} catch (\PDOException $e) {
+					die("insertTimelineOut: Erreur d'enregistrement des données : " . $e->getMessage());
+				} catch (\Exception $e) {
+					die("insertTimelineOut: Erreur d'enregistrement des données : " . $e->getMessage());
+				}
+				return true;
+			}
+			return false;
+		}
 	
 		// Afficher la vue login avec les erreurs
 		private function renderView(): string {
@@ -98,7 +132,7 @@
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				if($this->eleve){
 					$messageeleve .= $this->eleve['barrecode'];
-					$html = str_replace('{{msgeleve}}', $this->eleve['prenom']." ".$this->eleve['nom'], $html);
+					$html = str_replace('{{msgeleve}}', $this->eleve['prenom']." ".$this->eleve['nom']."<br>", $html);
 					$html = str_replace('{{elevebarrecode}}', $this->eleve['barrecode'], $html);
 				}
 				else {

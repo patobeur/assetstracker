@@ -3,11 +3,11 @@
 		<form method="POST" action="out">
 			{{errors}}
 			<div class="blocs">
-				{{msgeleve}}
+			{{msgeleve}}
 				<svg id="barcodeEleve"></svg>
 				<div class="input-container">
 					<span class="icon">🤚</span>
-					<input type="text" id="codeeleve" name="eleve" placeholder="codebarre élève" value="{{elevebarrecode}}">
+					<input type="text" id="codeeleve" name="eleve" placeholder="codebarre élève" value="{{elevebarrecode}}" required>
 				</div>
 				{{msgpc}}
 				<svg id="barcodePC"></svg>
@@ -21,4 +21,5 @@
 			</div>
 		</form>
 	</div>
-	<script src="/js/out.js" defer></script>
+	<script src="/vendor/JsBarcode/JsBarcode.all.min.js"></script>
+	<script defer type="module" src="/js/out.js"></script>

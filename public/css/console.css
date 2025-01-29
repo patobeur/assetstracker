@@ -1,6 +1,6 @@
 .console {
 	position: absolute;
-	width:300px;
+	width:400px;
 	right: 0px;
 	bottom: 0px;
 	margin: 0;
@@ -11,11 +11,12 @@
 	border-top-left-radius: 9px;
 	/* align-items: flex-end; */
 	p{
-		background-color: rgb(216, 216, 216);
+		background-color: rgba(46, 44, 44, 0.815);
 		margin: 0 5px 0 5px;
 		padding: 5px 5px 5px 5px;
 		display: none;
 		border-top: 1px solid black;
+		color: rgb(202, 201, 201);
 		&.alerte {
 			color: red;
 		}
@@ -44,5 +45,8 @@
 				margin-top: 40px;
 			}
 		}
+	}
+	&.hidden {
+		display:none;
 	}
 }
