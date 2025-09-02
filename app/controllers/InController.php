@@ -29,25 +29,29 @@
 			$this->messages = [];
 			
 
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-				$this->pc = null;
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                $token = $_POST['csrf_token'] ?? '';
+                                if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+                                        $this->messages[]=["content"=>"Token CSRF invalide","result"=>"error"];
+                                } else {
+                                        $this->pc = null;
 
-				if (!empty($_POST['pc'])){
-					$assetBarrecode = $_POST['pc'] ?? '';
-					$assetBarrecode = filter_var($assetBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-					if (!empty($assetBarrecode)) {
-						// recherche du barrecode dans eleve
-						$row = $this->CheckDb->once('pc',$assetBarrecode);
-						if(count($row)===1) {
-							$this->pc = $row[0];
-						}
-						else {
-							$this->messages[]=["content"=>"BarreCode PC introuvable !","result"=>"error"];
-						}
-					}
-				}
+                                        if (!empty($_POST['pc'])){
+                                                $assetBarrecode = $_POST['pc'] ?? '';
+                                                $assetBarrecode = filter_var($assetBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                                                if (!empty($assetBarrecode)) {
+                                                        // recherche du barrecode dans eleve
+                                                        $row = $this->CheckDb->once('pc',$assetBarrecode);
+                                                        if(count($row)===1) {
+                                                                $this->pc = $row[0];
+                                                        }
+                                                        else {
+                                                                $this->messages[]=["content"=>"BarreCode PC introuvable !","result"=>"error"];
+                                                        }
+                                                }
+                                        }
 
-				if($this->pc){
+                                        if($this->pc){
 
 
 					// qui a réservé ce pc dans la derniere action ?
@@ -89,14 +93,15 @@ $this->messagepc .= "<div>".htmlspecialchars($lcd[0]['promo'], ENT_QUOTES, 'UTF-
 						: ["content"=>"ENREGISTREMENT Raté  !","result"=>"alerte"];
 
 					$id = $last[0]['id'] ?? '';				
-					$this->contents['Redirect'] = [
-						'url'=> '/in?last='.$id,
-						'refresh'=> CONFIG['REFRESH']['in']
-					];
-				}
-			}
+                                        $this->contents['Redirect'] = [
+                                                'url'=> '/in?last='.$id,
+                                                'refresh'=> CONFIG['REFRESH']['in']
+                                        ];
+                                }
+                        }
+                        }
 
-			$html = $this->renderView();
+                        $html = $this->renderView();
 			
 			$this->contents = [
 				'CONTENT'=> $html,
@@ -209,8 +214,9 @@ $this->messagepc .= "<div>".htmlspecialchars($lcd[0]['promo'], ENT_QUOTES, 'UTF-
 
 		// Afficher la vue login avec les erreurs
 		private function renderView(): string {
-			$html = file_get_contents(filename: '../app/views/in.php');
-			$messageeleve = "";
+                        $html = file_get_contents(filename: '../app/views/in.php');
+                        $html = str_replace('{{csrf_token}}', htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'), $html);
+                        $messageeleve = "";
 
 
 

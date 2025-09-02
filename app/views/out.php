@@ -1,8 +1,9 @@
 	<h1>Empruntez un Pc !</h1>
 	<div class="form-container">
-		<form method="POST" action="out">
-			{{errors}}
-			<div class="blocs">
+                <form method="POST" action="out">
+                        {{errors}}
+                        <input type="hidden" name="csrf_token" value="{{csrf_token}}">
+                        <div class="blocs">
 			{{msgeleve}}
 				<svg id="barcodeEleve"></svg>
 				<div class="input-container">

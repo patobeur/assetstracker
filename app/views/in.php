@@ -1,8 +1,9 @@
 	<h1>Rendez un Pc !</h1>
 	<div class="form-container">
-		<form method="POST" action="in">
-			{{errors}}
-			<div class="blocs">
+                <form method="POST" action="in">
+                        {{errors}}
+                        <input type="hidden" name="csrf_token" value="{{csrf_token}}">
+                        <div class="blocs">
 				<div class="cards">
 					<div>
 						{{msgpc}}
