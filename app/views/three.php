@@ -6,9 +6,9 @@
 		}
 	}
 </script>
-<script>	
-	const pcs = {{pcsJson}}; 
-	const timeline = {{timelineJson}}; 
-	const eleves = {}; 
+<script>
+        const pcs = JSON.parse('{{pcsJson}}');
+        const timeline = JSON.parse('{{timelineJson}}');
+        const eleves = {};
 </script>
 <script defer type="module" src="./js/three.js"></script>

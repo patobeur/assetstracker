@@ -33,22 +33,32 @@
 			return $this->content;
 		}
 		
-		private function setPcsJson(){
-			$this->pcs = $this->list('pc','*');
-			if($this->pcs && count($this->pcs)>0) $this->pcsJson = json_encode($this->pcs);
-		}
-		private function setTimelineJson(){
-			$this->timeline = $this->list('timeline','*');
-			if($this->timeline && count($this->timeline)>0) $this->timelineJson = json_encode($this->timeline);
-		}
-		
-                private function renderView(){
-                        $this->content['CONTENT'] = View::render('three.php', [
-                                'pcsJson' => htmlspecialchars($this->pcsJson, ENT_QUOTES, 'UTF-8'),
-                                'timelineJson' => htmlspecialchars($this->timelineJson, ENT_QUOTES, 'UTF-8')
-                        ]);
+               private function setPcsJson(){
+                       $this->pcs = $this->list('pc','*');
+                       if($this->pcs && count($this->pcs)>0) {
+                               $this->pcsJson = json_encode(
+                                       $this->pcs,
+                                       JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                               );
+                       }
+               }
+               private function setTimelineJson(){
+                       $this->timeline = $this->list('timeline','*');
+                       if($this->timeline && count($this->timeline)>0) {
+                               $this->timelineJson = json_encode(
+                                       $this->timeline,
+                                       JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                               );
+                       }
+               }
 
-                }
+               private function renderView(){
+                       $this->content['CONTENT'] = View::render('three.php', [
+                               'pcsJson' => $this->pcsJson,
+                               'timelineJson' => $this->timelineJson
+                       ]);
+
+               }
 		// BDD
 		
 		/**
