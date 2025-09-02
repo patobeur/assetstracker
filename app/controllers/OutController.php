@@ -24,46 +24,51 @@
 				}
 			}
 
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-				$this->eleve = null;
-				$this->pc = null;
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                $token = $_POST['csrf_token'] ?? '';
+                                if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+                                        $this->messages[] = ["content"=>"Token CSRF invalide","result"=>"error"];
+                                } else {
+                                        $this->eleve = null;
+                                        $this->pc = null;
 
-				if (!empty($_POST['eleve'])){
-					$memberBarrecode = isset($_POST['eleve']) ? trim($_POST['eleve']) : '';
-					$memberBarrecode = filter_var($memberBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-					if (!empty($memberBarrecode)) {
-						// recherche du barrecode dans eleve
-						$row = $this->CheckDb->once('eleves',$memberBarrecode);
-						if(count($row)===1) {
-							$this->eleve = $row[0];
-						}
-						else {
-							$this->messages[]=["content"=>"BarreCode élève introuvable !","result"=>"error"];
-						}
-					}
-				}
-				if (!empty($_POST['pc'])){
-					$assetBarrecode = $_POST['pc'] ?? '';
-					$assetBarrecode = filter_var($assetBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-					if (!empty($assetBarrecode)) {
-						// recherche du barrecode dans eleve
-						$row = $this->CheckDb->once('pc',$assetBarrecode);
-						if(count($row)===1) {
-							$this->pc = $row[0];
-						}
-						else {
-							$this->messages[]=["content"=>"BarreCode PC introuvable !","result"=>"alerte"];
-						}
-					}
-				}
+                                        if (!empty($_POST['eleve'])){
+                                                $memberBarrecode = isset($_POST['eleve']) ? trim($_POST['eleve']) : '';
+                                                $memberBarrecode = filter_var($memberBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                                                if (!empty($memberBarrecode)) {
+                                                        // recherche du barrecode dans eleve
+                                                        $row = $this->CheckDb->once('eleves',$memberBarrecode);
+                                                        if(count($row)===1) {
+                                                                $this->eleve = $row[0];
+                                                        }
+                                                        else {
+                                                                $this->messages[]=["content"=>"BarreCode élève introuvable !","result"=>"error"];
+                                                        }
+                                                }
+                                        }
+                                        if (!empty($_POST['pc'])){
+                                                $assetBarrecode = $_POST['pc'] ?? '';
+                                                $assetBarrecode = filter_var($assetBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                                                if (!empty($assetBarrecode)) {
+                                                        // recherche du barrecode dans eleve
+                                                        $row = $this->CheckDb->once('pc',$assetBarrecode);
+                                                        if(count($row)===1) {
+                                                                $this->pc = $row[0];
+                                                        }
+                                                        else {
+                                                                $this->messages[]=["content"=>"BarreCode PC introuvable !","result"=>"alerte"];
+                                                        }
+                                                }
+                                        }
 
-				if($this->pc && $this->eleve ){
-					$insertRespons = $this->insertTimelineOut($this->pc['id'], $this->eleve['id'], 'out') ;
-					$this->messages[] = $insertRespons
-						?["content"=>"ENREGISTREMENT OK !","result"=>"succes"]
-						:["content"=>"ENREGISTREMENT Raté  !","result"=>"succes"];
-				}
-			}
+                                        if($this->pc && $this->eleve ){
+                                                $insertRespons = $this->insertTimelineOut($this->pc['id'], $this->eleve['id'], 'out') ;
+                                                $this->messages[] = $insertRespons
+                                                        ?["content"=>"ENREGISTREMENT OK !","result"=>"succes"]
+                                                        :["content"=>"ENREGISTREMENT Raté  !","result"=>"succes"];
+                                        }
+                                }
+                        }
 			if($this->pc && $this->eleve ){
 				$html = $this->renderView();
 				
@@ -123,8 +128,9 @@
 	
 		// Afficher la vue login avec les erreurs
 		private function renderView(): string {
-			$html = file_get_contents(filename: '../app/views/out.php');
-			$messageeleve = "";
+                        $html = file_get_contents(filename: '../app/views/out.php');
+                        $html = str_replace('{{csrf_token}}', htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'), $html);
+                        $messageeleve = "";
 			$messagepc = "";
 			$messages = '';			
 	
