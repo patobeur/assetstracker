@@ -130,21 +130,21 @@
 	
 			
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-				if($this->eleve){
-					$messageeleve .= $this->eleve['barrecode'];
-					$html = str_replace('{{msgeleve}}', $this->eleve['prenom']." ".$this->eleve['nom']."<br>", $html);
-					$html = str_replace('{{elevebarrecode}}', $this->eleve['barrecode'], $html);
-				}
+if($this->eleve){
+$messageeleve .= htmlspecialchars($this->eleve['barrecode'], ENT_QUOTES, 'UTF-8');
+$html = str_replace('{{msgeleve}}', htmlspecialchars($this->eleve['prenom'], ENT_QUOTES, 'UTF-8')." ".htmlspecialchars($this->eleve['nom'], ENT_QUOTES, 'UTF-8')."<br>", $html);
+$html = str_replace('{{elevebarrecode}}', htmlspecialchars($this->eleve['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
+}
 				else {
 					$html = str_replace('{{elevebarrecode}}', '', $html);
 					$html = str_replace('{{msgeleve}}', '', $html);
 				}
 
-				if($this->pc){
-					$messagepc .= $this->pc['barrecode'];
-					$html = str_replace('{{msgpc}}', $this->pc['barrecode'], $html);
-					$html = str_replace('{{pcbarrecode}}', $this->pc['barrecode'], $html);
-				}
+if($this->pc){
+$messagepc .= htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8');
+$html = str_replace('{{msgpc}}', htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
+$html = str_replace('{{pcbarrecode}}', htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
+}
 				else {
 					$html = str_replace('{{pcbarrecode}}', '', $html);
 					$html = str_replace('{{msgpc}}', '', $html);

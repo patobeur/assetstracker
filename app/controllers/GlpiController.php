@@ -150,19 +150,19 @@
 			foreach ($rows as $item) {
 					$content .= "<tr>";
 					foreach ($item as $key => $value) {
-						if($key==='user_dn' && $value != '') {
-							// $content .= "<td>".($value??'<em class="null">null</em>')."</td>";
-							$string = explode(",", $value);
-							$paquet = substr($string[1],3);
-							$section = substr($paquet, 0,-4);
-							$section = str_replace("BTS", "", $section);
-							$promo = substr($paquet, -4);
-							$content .= "<td>".$section."</td>";
-							$content .= "<td>".$promo."</td>";
-						}
-						else {
-							$content .= "<td>".($value??'<em class="null">null</em>')."</td>";
-						}
+                                            if($key==='user_dn' && $value != '') {
+                                                    // $content .= "<td>".($value??'<em class=\"null\">null</em>')."</td>";
+                                                    $string = explode(',', $value);
+                                                    $paquet = substr($string[1],3);
+                                                    $section = substr($paquet, 0,-4);
+                                                    $section = str_replace("BTS", "", $section);
+                                                    $promo = substr($paquet, -4);
+                                                    $content .= "<td>".htmlspecialchars($section, ENT_QUOTES, 'UTF-8')."</td>";
+                                                    $content .= "<td>".htmlspecialchars($promo, ENT_QUOTES, 'UTF-8')."</td>";
+                                            }
+                                            else {
+                                                    $content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
+                                            }
 						
 					}
 

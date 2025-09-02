@@ -59,19 +59,19 @@
 
 					
 					if($lpd && count($lpd)> 0){
-						$this->messagepc .= "<div>Pc N°".$lpd[0]['idpc']." loué le: ".$lpd[0]['birth']."</div>";
-						$this->messagepc .= "<div>Model:".$this->pc['model']."</div>";
-						$this->messagepc .= "<div>état: ".$this->pc['etat']."</div>";
-						$this->messagepc .= "<div>Par ideleve: ".$lpd[0]['ideleves']."</div>";
+$this->messagepc .= "<div>Pc N°".htmlspecialchars($lpd[0]['idpc'], ENT_QUOTES, 'UTF-8')." loué le: ".htmlspecialchars($lpd[0]['birth'], ENT_QUOTES, 'UTF-8')."</div>";
+$this->messagepc .= "<div>Model:".htmlspecialchars($this->pc['model'], ENT_QUOTES, 'UTF-8')."</div>";
+$this->messagepc .= "<div>état: ".htmlspecialchars($this->pc['etat'], ENT_QUOTES, 'UTF-8')."</div>";
+$this->messagepc .= "<div>Par ideleve: ".htmlspecialchars($lpd[0]['ideleves'], ENT_QUOTES, 'UTF-8')."</div>";
 
 						// qui était locataire by id
 						$this->lastClientDatas = $this->getClientById($lpd[0]['ideleves']) ;
 						$lcd = $this->lastClientDatas;
 						if($lpd && count($lpd)> 0){
-							$this->messagepc .= "<div>lastClientDatas: ".$lcd[0]['id']."</div> ";
-							$this->messagepc .= "<div>nom prenom: ".$lcd[0]['nom']." ".$lcd[0]['prenom']."</div>";
-							$this->messagepc .= "<div>[".$lcd[0]['classe']."</div> ";
-							$this->messagepc .= "<div>".$lcd[0]['promo']."]</div>";
+$this->messagepc .= "<div>lastClientDatas: ".htmlspecialchars($lcd[0]['id'], ENT_QUOTES, 'UTF-8')."</div> ";
+$this->messagepc .= "<div>nom prenom: ".htmlspecialchars($lcd[0]['nom'], ENT_QUOTES, 'UTF-8')." ".htmlspecialchars($lcd[0]['prenom'], ENT_QUOTES, 'UTF-8')."</div>";
+$this->messagepc .= "<div>[".htmlspecialchars($lcd[0]['classe'], ENT_QUOTES, 'UTF-8')."</div> ";
+$this->messagepc .= "<div>".htmlspecialchars($lcd[0]['promo'], ENT_QUOTES, 'UTF-8')."]</div>";
 							$this->messagepc .= '<img src="/vendor/feunico/svg/profile.svg" style="width:100px">';
 						}
 
@@ -231,10 +231,10 @@
 			
 			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-				if($this->pc){
-					$html = str_replace('{{msgpc}}', $this->messagepc, $html);
-					$html = str_replace('{{pcbarrecode}}', $this->pc['barrecode'], $html);
-				}
+if($this->pc){
+$html = str_replace('{{msgpc}}', $this->messagepc, $html);
+$html = str_replace('{{pcbarrecode}}', htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
+}
 				else {
 					$html = str_replace('{{pcbarrecode}}', '', $html);
 					$html = str_replace('{{msgpc}}', '', $html);

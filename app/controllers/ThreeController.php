@@ -45,8 +45,8 @@
 			
 			// $htmlView = str_replace('{{TITLE}}', $this->content['TITLE'], $htmlView);
 			// $htmlView = str_replace('{{CONTENT}}', $this->content['CONTENT'], $htmlView);
-			$htmlView = str_replace('{{pcsJson}}', $this->pcsJson, $htmlView);
-			$htmlView = str_replace('{{timelineJson}}', $this->timelineJson, $htmlView);
+$htmlView = str_replace('{{pcsJson}}', htmlspecialchars($this->pcsJson, ENT_QUOTES, 'UTF-8'), $htmlView);
+$htmlView = str_replace('{{timelineJson}}', htmlspecialchars($this->timelineJson, ENT_QUOTES, 'UTF-8'), $htmlView);
 
 			$this->content['CONTENT'] = $htmlView;
 
