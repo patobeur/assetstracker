@@ -148,11 +148,15 @@ function getTextMesh(message) {
 }
 //------------------------------------------
 function addTimeline(){
+    if (!Array.isArray(timeline)) {
+        console.warn('timeline is not an array');
+        return;
+    }
     // La timeline
     let size = {x: 0.9,y: 0.9,z: 0.9};
     let gap = {x: 0.1};
     let max = 10;
-    let length = timeline.length > max ? max : pcs.length;
+    let length = timeline.length > max ? max : timeline.length;
     let start = 0 - (Math.floor(length/2) * size.x) - (Math.floor(length/2) * gap.x )
     let pos = {x: start, y: size.z / 2 , z: 2};
     let count = 0;
@@ -180,6 +184,10 @@ function addTimeline(){
     });
 }
 function addPcs(){
+    if (!Array.isArray(pcs)) {
+        console.warn('pcs is not an array');
+        return;
+    }
     let size = {x: 0.9,y: 0.9,z: 0.9};
     let gap = {x: 0.1};
     let start = 0 - (Math.round(Math.sqrt(pcs.length)) * (size.x + gap.x ))
