@@ -95,26 +95,30 @@ class CheckDb
 		return $dberror;
 	}
 
-	/**
-	 * Fonction pour avoir une seule réponse
-	 */
-	public function once($table=false, $barrecode=false): array{
-		$respons = [];
-		if($table && $barrecode){
-			try {
-				$query = "SELECT * FROM {$table} WHERE barrecode = :barrecode LIMIT 1";
-				$stmt = $this->pdo->prepare($query);
-				$stmt->bindParam(':barrecode', $barrecode, \PDO::PARAM_STR);
-				$stmt->execute();
-				$respons = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-			} catch (\PDOException $e) {
-				die("Erreur de connexion ou de création de la base de données : " . $e->getMessage());
-			} catch (\Exception $e) {
-				die("Erreur : " . $e->getMessage());
-			}
-		}
-		return $respons;
-	}
+       /**
+        * Fonction pour avoir une seule réponse
+        */
+       public function once($table=false, $barrecode=false): array{
+               $respons = [];
+               $allowedTables = ['pc','eleves','timeline'];
+               if($table && !in_array($table, $allowedTables, true)){
+                       return ['error'=>'table non autorisée'];
+               }
+               if($table && $barrecode){
+                       try {
+                               $query = "SELECT * FROM {$table} WHERE barrecode = :barrecode LIMIT 1";
+                               $stmt = $this->pdo->prepare($query);
+                               $stmt->bindParam(':barrecode', $barrecode, \PDO::PARAM_STR);
+                               $stmt->execute();
+                               $respons = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                       } catch (\PDOException $e) {
+                               die("Erreur de connexion ou de création de la base de données : " . $e->getMessage());
+                       } catch (\Exception $e) {
+                               die("Erreur : " . $e->getMessage());
+                       }
+               }
+               return $respons;
+       }
 	
 	/**
 	 * Fonction pour mettre la position d'un pc a jour (in ou out)
