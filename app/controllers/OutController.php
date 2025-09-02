@@ -37,13 +37,16 @@
                                                 $memberBarrecode = filter_var($memberBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                                                 if (!empty($memberBarrecode)) {
                                                         // recherche du barrecode dans eleve
-                                                        $row = $this->CheckDb->once('eleves',$memberBarrecode);
-                                                        if(count($row)===1) {
-                                                                $this->eleve = $row[0];
-                                                        }
-                                                        else {
-                                                                $this->messages[]=["content"=>"BarreCode élève introuvable !","result"=>"error"];
-                                                        }
+                                                       $row = $this->CheckDb->once('eleves',$memberBarrecode);
+                                                       if(isset($row['error'])) {
+                                                               $this->messages[]=["content"=>$row['error'],"result"=>"error"];
+                                                       }
+                                                       elseif(count($row)===1) {
+                                                               $this->eleve = $row[0];
+                                                       }
+                                                       else {
+                                                               $this->messages[]=["content"=>"BarreCode élève introuvable !","result"=>"error"];
+                                                       }
                                                 }
                                         }
                                         if (!empty($_POST['pc'])){
@@ -51,13 +54,16 @@
                                                 $assetBarrecode = filter_var($assetBarrecode, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                                                 if (!empty($assetBarrecode)) {
                                                         // recherche du barrecode dans eleve
-                                                        $row = $this->CheckDb->once('pc',$assetBarrecode);
-                                                        if(count($row)===1) {
-                                                                $this->pc = $row[0];
-                                                        }
-                                                        else {
-                                                                $this->messages[]=["content"=>"BarreCode PC introuvable !","result"=>"alerte"];
-                                                        }
+                                                       $row = $this->CheckDb->once('pc',$assetBarrecode);
+                                                       if(isset($row['error'])) {
+                                                               $this->messages[]=["content"=>$row['error'],"result"=>"error"];
+                                                       }
+                                                       elseif(count($row)===1) {
+                                                               $this->pc = $row[0];
+                                                       }
+                                                       else {
+                                                               $this->messages[]=["content"=>"BarreCode PC introuvable !","result"=>"alerte"];
+                                                       }
                                                 }
                                         }
 
