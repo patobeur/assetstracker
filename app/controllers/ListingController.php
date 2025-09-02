@@ -1,7 +1,9 @@
 <?php
-	namespace app\controllers;	
+        namespace app\controllers;
 
-	class ListingController {
+        use app\core\View;
+
+        class ListingController {
 		private $CheckDb;
 		private $fpdfPath = '../app/vendor/fpdf/fpdf.php';
 		private $pdf;
@@ -37,55 +39,56 @@
 					$sqlList[] = $value;
 				}
 			}
-			else {
-				$html = file_get_contents('../app/views/listes.php');
-				$titles = [
-					"ID" => 'id',
-					"barrecode" => 'barrecode',
-					"Modèle" => 'model',
-					// "Numéro de Série" => 'serialnum',
-					"État" => 'etat',
-					"Entrée" => 'birth',
-					"Position" => 'position',
-					"Last" => 'lasteleve_id',
-				];
-				$theaders = "<tr>";
-				foreach ($titles as $key => $value) {
-					$theaders .= "<th>".$key."</th>";
-					$sqlList[] = $value;
-				}
-				if ($this->pdfAuth) $theaders .= '<th>Check</th>';
-				$theaders .= "</tr>";
-			}
-			
-			$items = $this->getRowsFrom('pc',implode(",", $sqlList));
+                        else {
+                                $titles = [
+                                        "ID" => 'id',
+                                        "barrecode" => 'barrecode',
+                                        "Modèle" => 'model',
+                                        // "Numéro de Série" => 'serialnum',
+                                        "État" => 'etat',
+                                        "Entrée" => 'birth',
+                                        "Position" => 'position',
+                                        "Last" => 'lasteleve_id',
+                                ];
+                                $theaders = "<tr>";
+                                foreach ($titles as $key => $value) {
+                                        $theaders .= "<th>".$key."</th>";
+                                        $sqlList[] = $value;
+                                }
+                                if ($this->pdfAuth) $theaders .= '<th>Check</th>';
+                                $theaders .= "</tr>";
+                        }
 
-			if($formatPdf){
-				$this->displayPdf($items);
-			}
-			else {
-				$content = '';
-				foreach ($items as $item) {
-						$content .= '<tr id="row_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'">';
-						foreach ($item as $value) {
-							$content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
-						}
-						if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" name="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" checked /></td>';
-					$content .= "</tr>";
-				}
-				
-				$html = str_replace('#PAGETITLE#', 'Liste des Pc', $html);
-				$html = str_replace('{{TITLES}}', $theaders, $html);
-				$html = str_replace('{{CONTENT}}', $content, $html);
-				$html = str_replace('{{FORMACTION}}', $this->pdfAuth?' target="_blank" action="listpc"':'', $html);
-				$html = str_replace('{{buttons}}', '<input type="submit" value="Pdf Barrecode">', $html);
-				$html = str_replace('{{PRINTINPUT}}', '<input type="hidden" name="print" value="print">', $html);
-				
-				return [
-					'CONTENT'=> $html,
-					'TITLE'=> 'Pc list'
-				];
-			}
+                        $items = $this->getRowsFrom('pc',implode(",", $sqlList));
+
+                        if($formatPdf){
+                                $this->displayPdf($items);
+                        }
+                        else {
+                                $content = '';
+                                foreach ($items as $item) {
+                                        $content .= '<tr id="row_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'">';
+                                        foreach ($item as $value) {
+                                                $content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
+                                        }
+                                        if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" name="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" checked /></td>';
+                                        $content .= "</tr>";
+                                }
+
+                                $html = View::render('listes.php', [
+                                        'PAGETITLE' => 'Liste des Pc',
+                                        'TITLES' => $theaders,
+                                        'CONTENT' => $content,
+                                        'FORMACTION' => $this->pdfAuth ? ' target="_blank" action="listpc"' : '',
+                                        'buttons' => '<input type="submit" value="Pdf Barrecode">',
+                                        'PRINTINPUT' => '<input type="hidden" name="print" value="print">'
+                                ]);
+
+                                return [
+                                        'CONTENT'=> $html,
+                                        'TITLE'=> 'Pc list'
+                                ];
+                        }
 
 		}
 		private function displayPdf($items=[]){
@@ -116,101 +119,103 @@
 		/**
 		 * Fonction Lire listEleves
 		*/
-		public function listEleves() {
-			$html = file_get_contents('../app/views/listes.php');
-			// id 	barrecode 	nom 	prenom 	promo 	classe 	birth 	mail 	lastpc_id 	
-			$sqlList = [];
-			$titles = [
-				"ID" => 'id',
-				"barrecode" => 'barrecode',
-				"nom" => 'nom',
-				"prenom" => 'prenom',
-				"classe" => 'classe',
-				"promo" => 'promo',
-				"birth" => 'birth',
-				"glpi_id" => 'glpi_id',
-				// "mail" => 'mail',
-				"lastpc_id" => 'lastpc_id'
-			];
+                public function listEleves() {
+                        // id   barrecode       nom     prenom  promo   classe  birth   mail    lastpc_id
+                        $sqlList = [];
+                        $titles = [
+                                "ID" => 'id',
+                                "barrecode" => 'barrecode',
+                                "nom" => 'nom',
+                                "prenom" => 'prenom',
+                                "classe" => 'classe',
+                                "promo" => 'promo',
+                                "birth" => 'birth',
+                                "glpi_id" => 'glpi_id',
+                                // "mail" => 'mail',
+                                "lastpc_id" => 'lastpc_id'
+                        ];
 
-			$theaders = "<tr>";
-			$theaders .= "<th>Check</th>";
-			foreach ($titles as $key => $value) {
-				$theaders .= "<th>".$key."</th>";
-				$sqlList[] = $value;
-			}
-			$theaders .= "<th>Action</th>";
-			$theaders .= "</tr>";
+                        $theaders = "<tr>";
+                        $theaders .= "<th>Check</th>";
+                        foreach ($titles as $key => $value) {
+                                $theaders .= "<th>".$key."</th>";
+                                $sqlList[] = $value;
+                        }
+                        $theaders .= "<th>Action</th>";
+                        $theaders .= "</tr>";
 
-			$items = $this->getRowsFrom('eleves',implode(",", $sqlList));
+                        $items = $this->getRowsFrom('eleves',implode(",", $sqlList));
 
-			$content = '';
-			foreach ($items as $item) {
-				$content .= "<tr>";
-				$content .= '<td><input type="checkbox" id="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" name="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" /></td>';
-				foreach ($item as $value) {
-					$content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
-				}
-				$content .= '<td><a href="/eleve?num='.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'">ref: '.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'</a></td>';
-				$content .= "</tr>";
-			}
-			
-            $html = str_replace('#PAGETITLE#', 'Liste des Élèves', $html);
-            $html = str_replace('{{TITLES}}', $theaders, $html);
-            $html = str_replace('{{CONTENT}}', $content, $html);
-			$html = str_replace('{{FORMACTION}}', $this->pdfAuth?' target="_blank" action="listeleve"':'', $html);
-			$html = str_replace('{{buttons}}', '', $html);
-			$html = str_replace('{{PRINTINPUT}}', '', $html);
-			
-			return [
-				'CONTENT'=> $html,
-				'TITLE'=> 'Élèves list'
-			];
-		}
+                        $content = '';
+                        foreach ($items as $item) {
+                                $content .= "<tr>";
+                                $content .= '<td><input type="checkbox" id="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" name="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" /></td>';
+                                foreach ($item as $value) {
+                                        $content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
+                                }
+                                $content .= '<td><a href="/eleve?num='.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'">ref: '.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'</a></td>';
+                                $content .= "</tr>";
+                        }
+
+                        $html = View::render('listes.php', [
+                                'PAGETITLE' => 'Liste des Élèves',
+                                'TITLES' => $theaders,
+                                'CONTENT' => $content,
+                                'FORMACTION' => $this->pdfAuth ? ' target="_blank" action="listeleve"' : '',
+                                'buttons' => '',
+                                'PRINTINPUT' => ''
+                        ]);
+
+                        return [
+                                'CONTENT'=> $html,
+                                'TITLE'=> 'Élèves list'
+                        ];
+                }
 
 		/**
 		 * Fonction Lire listTimeline
 		*/
-		public function listTimeline() {
-			$html = file_get_contents('../app/views/listes.php');
-			$content = '';
-			$sqlList = [];
-			$titles = [
-				"ID" => 'id',
-				"idpc" => 'idpc',
-				"ideleves" => 'ideleves',
-				"typeaction" => 'typeaction',
-				"Date" => 'birth',
-			];
-			$theaders = "<tr>";
-			foreach ($titles as $key => $value) {
-				$theaders .= "<th>".$key."</th>";
-				$sqlList[] = $value;
-			}
-			$theaders .= "</tr>";
+                public function listTimeline() {
+                        $content = '';
+                        $sqlList = [];
+                        $titles = [
+                                "ID" => 'id',
+                                "idpc" => 'idpc',
+                                "ideleves" => 'ideleves',
+                                "typeaction" => 'typeaction',
+                                "Date" => 'birth',
+                        ];
+                        $theaders = "<tr>";
+                        foreach ($titles as $key => $value) {
+                                $theaders .= "<th>".$key."</th>";
+                                $sqlList[] = $value;
+                        }
+                        $theaders .= "</tr>";
 
-			$items = $this->getRowsFrom('timeline',implode(",", $sqlList));
+                        $items = $this->getRowsFrom('timeline',implode(",", $sqlList));
 
-			foreach ($items as $item) {
-					$content .= "<tr>";
-					foreach ($item as $value) {
-						$content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class="null">null</em>')."</td>";
-					}
-				$content .= "</tr>";
-			}
-			
-            $html = str_replace('#PAGETITLE#', 'Timeline', $html);
-            $html = str_replace('{{TITLES}}', $theaders, $html);
-            $html = str_replace('{{CONTENT}}', $content, $html);
-			$html = str_replace('{{FORMACTION}}', $this->pdfAuth?' target="_blank" action="timeline"':'', $html);
-			$html = str_replace('{{buttons}}', '', $html);
-			$html = str_replace('{{PRINTINPUT}}', '', $html);
+                        foreach ($items as $item) {
+                                $content .= "<tr>";
+                                foreach ($item as $value) {
+                                        $content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
+                                }
+                                $content .= "</tr>";
+                        }
 
-			return [
-				'CONTENT'=> $html,
-				'TITLE'=> 'Timeline'
-			];
-		}
+                        $html = View::render('listes.php', [
+                                'PAGETITLE' => 'Timeline',
+                                'TITLES' => $theaders,
+                                'CONTENT' => $content,
+                                'FORMACTION' => $this->pdfAuth ? ' target="_blank" action="timeline"' : '',
+                                'buttons' => '',
+                                'PRINTINPUT' => ''
+                        ]);
+
+                        return [
+                                'CONTENT'=> $html,
+                                'TITLE'=> 'Timeline'
+                        ];
+                }
 
 		// BDD
 		

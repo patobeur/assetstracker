@@ -1,7 +1,9 @@
 <?php
-	namespace app\controllers;
-	
-	class LoginController {
+        namespace app\controllers;
+
+        use app\core\View;
+
+        class LoginController {
 		private $pdo;
 		private $CheckDb;
 	
@@ -179,31 +181,28 @@
 		}
 
 		// Afficher la vue login avec les erreurs
-		private function renderView($errors = []) {
-			$html = file_get_contents('../app/views/login.php');
-			$htmlform = file_get_contents('../app/views/login/loginForm.php');
-	
-			// Ajouter les erreurs
-			$errorHtml = '';
-			
-			if (!empty($errors)) {
-				foreach ($errors as $error) {
-					$errorHtml .= "<p class='error'>" . $error . "</p>";
-				}
-			}
-	
-			$html = str_replace('{{errors}}', $errorHtml, $html);
-			if($this->pdo){
-				$html = str_replace('{{loginform}}', $htmlform, $html);
-			}
-			else {
-				$html = str_replace('{{loginform}}', '', $html);
-			}
-			return [
-				'CONTENT'=> $html,
-				'TITLE'=> 'Page Login',
-			];
-		}
+                private function renderView($errors = []) {
+                        $vars = [
+                                'errors' => '',
+                                'loginform' => ''
+                        ];
+
+                        if (!empty($errors)) {
+                                foreach ($errors as $error) {
+                                        $vars['errors'] .= "<p class='error'>" . $error . "</p>";
+                                }
+                        }
+
+                        if ($this->pdo) {
+                                $vars['loginform'] = View::render('login/loginForm.php');
+                        }
+
+                        $html = View::render('login.php', $vars);
+                        return [
+                                'CONTENT'=> $html,
+                                'TITLE'=> 'Page Login',
+                        ];
+                }
 		
 		public function logout()
 		{

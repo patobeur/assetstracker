@@ -1,6 +1,8 @@
 <?php
         namespace app\controllers;
 
+        use app\core\View;
+
         class ProfileController
         {
                 private $view = '';
@@ -16,7 +18,6 @@
                         if($CheckDb){
                                 $this->CheckDb = $CheckDb;
                         }
-                        $this->view = file_get_contents('../app/views/profile.php');
                 }
 
                 public function showProfile()
@@ -26,7 +27,6 @@
                                 header('Location: /login');
                         } else {
 
-                                $content = str_replace("{{TITLE}}",$this->contents['TITLE'],$this->view);
                                 $profileHtml = 'une erreur sans doute ?';
                                 $row = $this->getProfilRow();
                                 if ($row && count($row) > 0){
@@ -43,11 +43,12 @@
                                 }
 
 
-                                $content = str_replace("{{CONTENT}}",$profileHtml, $content);
+                                $html = View::render('profile.php', [
+                                        'TITLE' => $this->contents['TITLE'],
+                                        'CONTENT' => $profileHtml
+                                ]);
 
-
-
-                                $this->contents['CONTENT'] = $content;
+                                $this->contents['CONTENT'] = $html;
                                 return $this->contents;
                         }
                 }

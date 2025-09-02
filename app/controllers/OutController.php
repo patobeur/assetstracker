@@ -127,58 +127,34 @@
 		}
 	
 		// Afficher la vue login avec les erreurs
-		private function renderView(): string {
-                        $html = file_get_contents(filename: '../app/views/out.php');
-                        $html = str_replace('{{csrf_token}}', htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'), $html);
-                        $messageeleve = "";
-			$messagepc = "";
-			$messages = '';			
-	
-			
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-if($this->eleve){
-$messageeleve .= htmlspecialchars($this->eleve['barrecode'], ENT_QUOTES, 'UTF-8');
-$html = str_replace('{{msgeleve}}', htmlspecialchars($this->eleve['prenom'], ENT_QUOTES, 'UTF-8')." ".htmlspecialchars($this->eleve['nom'], ENT_QUOTES, 'UTF-8')."<br>", $html);
-$html = str_replace('{{elevebarrecode}}', htmlspecialchars($this->eleve['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
-}
-				else {
-					$html = str_replace('{{elevebarrecode}}', '', $html);
-					$html = str_replace('{{msgeleve}}', '', $html);
-				}
+                private function renderView(): string {
+                        $vars = [
+                                'csrf_token' => htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'),
+                                'msgeleve' => '',
+                                'msgpc' => '',
+                                'errors' => '',
+                                'pcbarrecode' => '',
+                                'elevebarrecode' => ''
+                        ];
 
-if($this->pc){
-$messagepc .= htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8');
-$html = str_replace('{{msgpc}}', htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
-$html = str_replace('{{pcbarrecode}}', htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
-}
-				else {
-					$html = str_replace('{{pcbarrecode}}', '', $html);
-					$html = str_replace('{{msgpc}}', '', $html);
-				}
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                if ($this->eleve) {
+                                        $vars['msgeleve'] = htmlspecialchars($this->eleve['prenom'], ENT_QUOTES, 'UTF-8') . " " . htmlspecialchars($this->eleve['nom'], ENT_QUOTES, 'UTF-8') . "<br>";
+                                        $vars['elevebarrecode'] = htmlspecialchars($this->eleve['barrecode'], ENT_QUOTES, 'UTF-8');
+                                }
+                                if ($this->pc) {
+                                        $vars['msgpc'] = htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8');
+                                        $vars['pcbarrecode'] = htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8');
+                                }
+                                if (!empty($this->messages)) {
+                                        foreach ($this->messages as $error) {
+                                                $content = $error['content'];
+                                                $result = $error['result'];
+                                                $vars['errors'] .= '<p class="'.$result.'">' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</p>';
+                                        }
+                                }
+                        }
 
-
-				// Ajouter les erreurs
-				if (!empty($this->messages)) {
-					foreach ($this->messages as $error) {
-						$content = $error['content'];
-						$result = $error['result'];
-						$messages .= '<p class="'.$result.'">' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . "</p>";
-					}
-					$html = str_replace('{{errors}}', $messages, $html);
-				}
-				else {
-					$html = str_replace('{{errors}}', '', $html);
-				}
-			}
-			else {
-				$html = str_replace('{{msgpc}}', '', $html);
-				$html = str_replace('{{msgeleve}}', '', $html);
-				$html = str_replace('{{errors}}', '', $html);
-				$html = str_replace('{{pcbarrecode}}', '', $html);
-				$html = str_replace('{{elevebarrecode}}', '', $html);
-			}
-
-
-			return $html;
-		}
+                        return View::render('out.php', $vars);
+                }
 	}

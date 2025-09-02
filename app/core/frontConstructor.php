@@ -12,11 +12,11 @@ class FrontConstructor
 
 	public function __construct($Console) {
 
-		$this->Navigation = new Navigation();
-		$this->Navigation2 = new Navigation2();
-		$this->Console = $Console;
-		$this->pageToDisplay = file_get_contents(filename: '../app/views/front.php');
-	}
+                $this->Navigation = new Navigation();
+                $this->Navigation2 = new Navigation2();
+                $this->Console = $Console;
+                $this->pageToDisplay = View::render('front.php');
+        }
 
 	public function addContent(): void
 	{

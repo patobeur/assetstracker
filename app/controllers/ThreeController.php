@@ -1,7 +1,9 @@
 <?php
-	namespace app\controllers;
-	
-	class ThreeController {
+        namespace app\controllers;
+
+        use app\core\View;
+
+        class ThreeController {
 		private $CheckDb;
 		private $pdo;
 		private $pcs = [];
@@ -40,17 +42,13 @@
 			if($this->timeline && count($this->timeline)>0) $this->timelineJson = json_encode($this->timeline);
 		}
 		
-		private function renderView(){
-			$htmlView = file_get_contents(filename: '../app/views/three.php');
-			
-			// $htmlView = str_replace('{{TITLE}}', $this->content['TITLE'], $htmlView);
-			// $htmlView = str_replace('{{CONTENT}}', $this->content['CONTENT'], $htmlView);
-$htmlView = str_replace('{{pcsJson}}', htmlspecialchars($this->pcsJson, ENT_QUOTES, 'UTF-8'), $htmlView);
-$htmlView = str_replace('{{timelineJson}}', htmlspecialchars($this->timelineJson, ENT_QUOTES, 'UTF-8'), $htmlView);
+                private function renderView(){
+                        $this->content['CONTENT'] = View::render('three.php', [
+                                'pcsJson' => htmlspecialchars($this->pcsJson, ENT_QUOTES, 'UTF-8'),
+                                'timelineJson' => htmlspecialchars($this->timelineJson, ENT_QUOTES, 'UTF-8')
+                        ]);
 
-			$this->content['CONTENT'] = $htmlView;
-
-		}
+                }
 		// BDD
 		
 		/**

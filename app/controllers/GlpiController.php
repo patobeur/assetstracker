@@ -1,7 +1,9 @@
 <?php
-	namespace app\controllers;
-	
-	class GlpiController {
+        namespace app\controllers;
+
+        use app\core\View;
+
+        class GlpiController {
 		private $lvAuth = 5;
 		private $pdfAuth;
 		private $CheckDb;
@@ -110,19 +112,14 @@
 			return $this->content;
 		}
 		
-		private function renderView(){
-			$htmlView = file_get_contents(filename: '../app/views/glpipc.php');
-				
-			$htmlView = str_replace('{{TITLE}}', $this->content['TITLE'], $htmlView);
-			$htmlView = str_replace('{{CONTENT}}', $this->content['CONTENT'], $htmlView);
-			// $htmlView = str_replace('{{FORMACTION}}', ' action="listpc"', $htmlView);
-			$htmlView = str_replace('{{PRINTINPUT}}', '', $htmlView);
+                private function renderView(){
+                        $this->content['CONTENT'] = View::render('glpipc.php', [
+                                'TITLE' => $this->content['TITLE'],
+                                'CONTENT' => $this->content['CONTENT'],
+                                'PRINTINPUT' => ''
+                        ]);
 
-
-
-			$this->content['CONTENT'] = $htmlView;
-
-		}
+                }
 		private function getTheadersAndCols($titles=[]) {
 			$cols = [];
 			$theaders = "<tr>";
@@ -144,61 +141,59 @@
 		private function getList($title, $table, $theaders=false, $rows=[], $categorie) {
 
 
-			$html = file_get_contents('../app/views/glpipc/listesGlpi.php');
-			$content = '';
+                        $content = '';
 
-			foreach ($rows as $item) {
-					$content .= "<tr>";
-					foreach ($item as $key => $value) {
-                                            if($key==='user_dn' && $value != '') {
-                                                    // $content .= "<td>".($value??'<em class=\"null\">null</em>')."</td>";
-                                                    $string = explode(',', $value);
-                                                    $paquet = substr($string[1],3);
-                                                    $section = substr($paquet, 0,-4);
-                                                    $section = str_replace("BTS", "", $section);
-                                                    $promo = substr($paquet, -4);
-                                                    $content .= "<td>".htmlspecialchars($section, ENT_QUOTES, 'UTF-8')."</td>";
-                                                    $content .= "<td>".htmlspecialchars($promo, ENT_QUOTES, 'UTF-8')."</td>";
-                                            }
-                                            else {
-                                                    $content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
-                                            }
-						
-					}
+                        foreach ($rows as $item) {
+                                $content .= "<tr>";
+                                foreach ($item as $key => $value) {
+                                    if($key==='user_dn' && $value != '') {
+                                            $string = explode(',', $value);
+                                            $paquet = substr($string[1],3);
+                                            $section = substr($paquet, 0,-4);
+                                            $section = str_replace("BTS", "", $section);
+                                            $promo = substr($paquet, -4);
+                                            $content .= "<td>".htmlspecialchars($section, ENT_QUOTES, 'UTF-8')."</td>";
+                                            $content .= "<td>".htmlspecialchars($promo, ENT_QUOTES, 'UTF-8')."</td>";
+                                    }
+                                    else {
+                                            $content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
+                                    }
 
-					if($table===$this->tablesGlpi['eleves']){
-						if (in_array($item['id'], $this->ElevesIds)) {
-							if ($this->pdfAuth) $content .= '<td class="check"></td>';
-						} else {
-							if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.$item['id'].'" name="item_'.$item['id'].'" checked /></td>';
-						}
-					}
-					if($table===$this->tablesGlpi['pc']){
-						if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.$item['id'].'" name="item_'.$item['id'].'" checked /></td>';
-					}
+                                }
 
-				$content .= "</tr>";
-			}
-			
-            $html = str_replace('{{PAGETITLE}}', $title, $html);
-            $html = str_replace('{{TITLES}}', $theaders, $html);
-            $html = str_replace('{{CONTENT}}', $content, $html);
+                                if($table===$this->tablesGlpi['eleves']){
+                                        if (in_array($item['id'], $this->ElevesIds)) {
+                                                if ($this->pdfAuth) $content .= '<td class="check"></td>';
+                                        } else {
+                                                if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.$item['id'].'" name="item_'.$item['id'].'" checked /></td>';
+                                        }
+                                }
+                                if($table===$this->tablesGlpi['pc']){
+                                        if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.$item['id'].'" name="item_'.$item['id'].'" checked /></td>';
+                                }
 
+                                $content .= "</tr>";
+                        }
 
-			if($categorie==='pc'){
-				$html = str_replace('{{FORMACTION}}', ' action="listpc"', $html);
-			}
-			elseif($categorie==='eleve'){
-				$html = str_replace('{{FORMACTION}}', ' action="listeleve"', $html);
-			}
-			else{
-				$html = str_replace('{{FORMACTION}}', '', $html);
-			}
-			$html = str_replace('{{buttons}}', '', $html);
-			
+                        $vars = [
+                                'PAGETITLE' => $title,
+                                'TITLES' => $theaders,
+                                'CONTENT' => $content,
+                                'FORMACTION' => '',
+                                'buttons' => '',
+                                'PRINTINPUT' => ''
+                        ];
+                        if($categorie==='pc'){
+                                $vars['FORMACTION'] = ' action="listpc"';
+                        }
+                        elseif($categorie==='eleve'){
+                                $vars['FORMACTION'] = ' action="listeleve"';
+                        }
 
-			return ['CONTENT'=> $html];
-		}
+                        $html = View::render('glpipc/listesGlpi.php', $vars);
+
+                        return ['CONTENT'=> $html];
+                }
 		// BDD
 		
 		/**

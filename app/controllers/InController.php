@@ -213,52 +213,29 @@ $this->messagepc .= "<div>".htmlspecialchars($lcd[0]['promo'], ENT_QUOTES, 'UTF-
 		}
 
 		// Afficher la vue login avec les erreurs
-		private function renderView(): string {
-                        $html = file_get_contents(filename: '../app/views/in.php');
-                        $html = str_replace('{{csrf_token}}', htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'), $html);
-                        $messageeleve = "";
+                private function renderView(): string {
+                        $vars = [
+                                'csrf_token' => htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'),
+                                'errors' => '',
+                                'msgpc' => '',
+                                'pcbarrecode' => ''
+                        ];
 
+                        if (!empty($this->messages)) {
+                                foreach ($this->messages as $error) {
+                                        $content = $error['content'];
+                                        $result = $error['result'];
+                                        $vars['errors'] .= '<p class="'.$result.'">' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . '</p>';
+                                }
+                        }
 
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                                if ($this->pc) {
+                                        $vars['msgpc'] = $this->messagepc;
+                                        $vars['pcbarrecode'] = htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8');
+                                }
+                        }
 
-			$messages = '';			
-	
-				// Ajouter les erreurs
-				if (!empty($this->messages)) {
-					foreach ($this->messages as $error) {
-						$content = $error['content'];
-						$result = $error['result'];
-						$messages .= '<p class="'.$result.'">' . htmlspecialchars($content, ENT_QUOTES, 'UTF-8') . "</p>";
-					}
-					$html = str_replace('{{errors}}', $messages, $html);
-				}
-				else {
-					$html = str_replace('{{errors}}', '', $html);
-				}
-			
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-if($this->pc){
-$html = str_replace('{{msgpc}}', $this->messagepc, $html);
-$html = str_replace('{{pcbarrecode}}', htmlspecialchars($this->pc['barrecode'], ENT_QUOTES, 'UTF-8'), $html);
-}
-				else {
-					$html = str_replace('{{pcbarrecode}}', '', $html);
-					$html = str_replace('{{msgpc}}', '', $html);
-				}
-
-
-			}
-			else {
-				$html = str_replace('{{msgpc}}', '', $html);
-
-				
-
-
-				// $html = str_replace('{{errors}}', '', $html);
-				$html = str_replace('{{pcbarrecode}}', '', $html);
-			}
-
-
-			return $html;
-		}
+                        return View::render('in.php', $vars);
+                }
 	}

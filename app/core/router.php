@@ -59,10 +59,10 @@ class Router
         $this->routes[$route] = $action;
     }
 
-	public function setdefaultPage()
-	{
-		$this->defaultPage = file_get_contents('../app/views/front.php');
-	}
+        public function setdefaultPage()
+        {
+                $this->defaultPage = View::render('front.php');
+        }
 
 	public function display()
 	{

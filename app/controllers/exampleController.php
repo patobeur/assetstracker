@@ -1,7 +1,9 @@
 <?php
-	namespace app\controllers;
-	
-	class ExampleController {
+        namespace app\controllers;
+
+        use app\core\View;
+
+        class ExampleController {
 		private $menus = [];
 		private $content = [
 				'TITLE' => "example",
@@ -33,14 +35,12 @@
 			die();
 		}
 		
-		private function renderView(){
-			$htmlView = file_get_contents(filename: '../app/views/example.php');		
-			$htmlView = str_replace('{{TITLE}}', $this->content['TITLE'], $htmlView);
-			// $htmlView = str_replace('{{CONTENT}}', $this->content['CONTENT'], $htmlView);
+                private function renderView(){
+                        $this->content['CONTENT'] = View::render('example.php', [
+                                'TITLE' => $this->content['TITLE']
+                        ]);
 
-			$this->content['CONTENT'] = $htmlView;
-
-		}
+                }
 
 
 		// Gérer le traitement de connexion
