@@ -1,8 +1,10 @@
 <?php
 
-	namespace app\controllers;
+        namespace app\controllers;
 
-	class NotFoundController
+        use app\core\View;
+
+        class NotFoundController
 	{
 
 		private $boule = '';
@@ -25,13 +27,10 @@
 			return $this->content;
 		}
 		// Afficher la vue login avec les erreurs
-		private function renderView(){
-			$htmlView = file_get_contents(filename: '../app/views/notfound.php');
-				
-			$htmlView = str_replace('{{TITLE}}', $this->content['TITLE'], $htmlView);
-			$htmlView = str_replace('{{CONTENT}}', $this->content['CONTENT'], $htmlView);
-
-			$this->content['CONTENT'] = $htmlView;
-
-		}
-	}
+                private function renderView(){
+                        $this->content['CONTENT'] = View::render('notfound.php', [
+                                'TITLE' => $this->content['TITLE'],
+                                'CONTENT' => $this->content['CONTENT']
+                        ]);
+                }
+        }

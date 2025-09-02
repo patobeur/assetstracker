@@ -1,7 +1,9 @@
 <?php
-	namespace app\controllers;
-	
-	class InterfaceController {
+        namespace app\controllers;
+
+        use app\core\View;
+
+        class InterfaceController {
 		private $content = [
 				'TITLE' => "Interface",
 				'CONTENT'   => ''
@@ -16,14 +18,12 @@
 			return $this->content;
 		}
 		
-		private function renderView(){
-			$htmlView = file_get_contents(filename: '../app/views/interface.php');
-				
-			$htmlView = str_replace('{{TITLE}}', $this->content['TITLE'], $htmlView);
-			$htmlView = str_replace('{{CONTENT}}', $this->content['CONTENT'], $htmlView);
+                private function renderView(){
+                        $this->content['CONTENT'] = View::render('interface.php', [
+                                'TITLE' => $this->content['TITLE'],
+                                'CONTENT' => $this->content['CONTENT']
+                        ]);
 
-			$this->content['CONTENT'] = $htmlView;
-
-		}
+                }
 		
     }
