@@ -23,6 +23,8 @@ class Router
 		// c'est ici que l'on ajoutera les pages accessible uniquement si non loggué 
 		if (!isset($_SESSION['user'])) {
 			$this->add(route: 'login',action: 'LoginController@handleLogin@db@0@null');
+			$this->add(route: 'example',action: 'exampleController@ExampleHandler@db@0@null');
+			$this->add(route: 'contact',action: 'exampleController@ContactHandler@db@0@null');
 		}
 		// c'est ici que l'on ajoutera les pages accessible uniquement si loggué 
 		if (isset($_SESSION['user'])) {

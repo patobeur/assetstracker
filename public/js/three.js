@@ -7,11 +7,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 // import { _client } from './client.js'
 let Font;
 
-let scene,camera,renderer,clock;
-let controls;
-let container;
-	
-
+let scene,camera,renderer,clock,controls,container;
 
 document.addEventListener("DOMContentLoaded", () => {
     if(THREE) start();
@@ -19,10 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function start() {
     console.log(THREE)
     const loader = new FontLoader();
-    loader.load('./node_modules_min/three/examples/fonts/helvetiker_regular.typeface.json', (font) => {
-        Font = font;
-        go();
-    })
+    loader.load('./node_modules_min/three/examples/fonts/helvetiker_regular.typeface.json', (font) => {Font = font; go();})
 }
 
 function go() {
@@ -44,49 +37,34 @@ function go() {
         renderer.setSize(window.innerWidth, window.innerHeight);
     }
 }
-function animate() {
-    
+function animate() {    
     const delta = clock.getDelta();
-
     requestAnimationFrame(animate);
     camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    
+    camera.updateProjectionMatrix();    
     controls.update();
     renderer.render(scene, camera);
 }
 //------------------------------------------
 function createScene(){
-    // Créer une nouvelle scène 3D
     scene = new THREE.Scene();
-
-    // Créer une caméra perspective
     camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.set(0,15,20);
-
-    // Créer un rendu WebGL
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.shadowMap.enabled = true;
-
-    // Configuration du rendu
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
 }
-function addElements(){
-    
+function addElements(){    
     const grid = new THREE.GridHelper( 11, 11, 0x000000, 0x000000 );
     grid.material.opacity = 0.7;
     grid.material.transparent = true;
     scene.add( grid );
-
-
     // Créer le sol
     const groundGeometry = new THREE.BoxGeometry(1000, 0.5, 1000);
-    const groundMaterial = new THREE.MeshPhongMaterial({
-        color: 0xfafafa
-    });
+    const groundMaterial = new THREE.MeshPhongMaterial({color: 0xfafafa});
     const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
     groundMesh.receiveShadow = true;
     // groundMesh.castShadow = true;
@@ -96,12 +74,10 @@ function addElements(){
 function addAmbiance(){
     // Créer un brouilalrd d'ambiance
     scene.fog = new THREE.Fog(0x000020, 10, 120);
-    scene.background = new THREE.Color( 0x000020  );
-                
+    scene.background = new THREE.Color( 0x000020  );                
     // const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x8d8d8d, 1 );
     // hemiLight.position.set( 0, 20, 0 );
     // scene.add( hemiLight );
-
 				const dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
 				// dirLight.position.set( - 3, 10, - 10 );
                 dirLight.position.set( 0, 30, -10 );
@@ -113,8 +89,6 @@ function addAmbiance(){
 				dirLight.shadow.camera.near = 0.1;
 				dirLight.shadow.camera.far = 50;
 				scene.add( dirLight );
-
-
     // Créer une lumière ambiante
     const ambient = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambient);
@@ -147,11 +121,9 @@ function addAmbiance(){
     // scene.add(slHelper);
 }
 function addOrbitControls(){
-    // Contrôles pour déplacer la caméra
     controls = new OrbitControls(camera, renderer.domElement);
 }
 function addScene(){
-    // Ajouter le rendu au dom
     container = document.getElementById('container')
     renderer.domElement.style.position = 'absolute';
     renderer.domElement.style.top = '0';
@@ -170,12 +142,8 @@ function getTextMesh(message) {
         bevelSize: 0.02,
         bevelSegments: 5,
     });
-
-    const textMaterial = new THREE.MeshStandardMaterial({
-        color: 0x000000
-    });
+    const textMaterial = new THREE.MeshStandardMaterial({color: 0x000000});
     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-
     return textMesh;
 }
 //------------------------------------------
@@ -203,8 +171,8 @@ function addTimeline(){
 
         let texte = getTextMesh(element.idpc.toString());
         
-        pcMesh.add(texte);
         texte.position.z = size.z / 2;
+        // pcMesh.add(texte);
         pos.x += size.x + gap.x
         scene.add(pcMesh);
         count++;
@@ -220,11 +188,7 @@ function addPcs(){
 
     pcs.forEach(element => {
         // Créer un cube
-        // Object { 
-        // id: 1, barrecode: "10000001", model: "Dell Inspiron", 
-        // serialnum: "SN12345", birth: "2025-01-18 16:07:36", 
-        // etat: "Disponible", typeasset_id: 1, position: "in",
-        //  lasteleve_id: null }
+        // Object { id: 1, barrecode: "10000001", model: "Dell Inspiron", serialnum: "SN12345", birth: "2025-01-18 16:07:36", etat: "Disponible", typeasset_id: 1, position: "in",lasteleve_id: null }
         let color = element.position === 'in' ? 0x00ff00 : 0xff0000;
         let pc = new THREE.BoxGeometry(size.x, size.x, size.x);
         let pcMate = new THREE.MeshPhongMaterial({
@@ -233,13 +197,13 @@ function addPcs(){
         let pcMesh = new THREE.Mesh(pc, pcMate);
         pcMesh.castShadow = true;
 		pcMesh.receiveShadow = true;
+
         pcMesh.position.x = pos.x + 0;
         pcMesh.position.y = pos.y + 0;
         pcMesh.position.z = pos.z + 0;
         pcMesh.rotation.x = -Math.PI/2;
+
         let texte = getTextMesh(element.id.toString());
-
-
         pcMesh.add(texte);
         // texte.position.set(pos.x+0, pos.y+0, pos.z+0);
         texte.position.z = size.z / 2;

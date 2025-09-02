@@ -8,10 +8,12 @@ class FrontConstructor
 	private $Console;
 	private $contentStack = [];
 	private $Navigation;
+	private $Navigation2;
 
 	public function __construct($Console) {
 
 		$this->Navigation = new Navigation();
+		$this->Navigation2 = new Navigation2();
 		$this->Console = $Console;
 		$this->pageToDisplay = file_get_contents(filename: '../app/views/front.php');
 	}
@@ -58,7 +60,8 @@ class FrontConstructor
 		
 
 		$this->addConsole();
-		$this->pageToDisplay = $this->Navigation->addNavigation($this->pageToDisplay, $url);
+		// $this->pageToDisplay = $this->Navigation->addNavigation($this->pageToDisplay, $url);
+		$this->pageToDisplay = $this->Navigation2->addNavigation($this->pageToDisplay, $url);
 
 		return $this->pageToDisplay;
 	}

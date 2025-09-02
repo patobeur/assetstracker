@@ -1,5 +1,6 @@
 <?php
-
+	// anciennement : install.php
+	// fichier renommé apres l'install
 	session_start();
 	define('PROD',0); // 0 en dev, 1 en prod
 	

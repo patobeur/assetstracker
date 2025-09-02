@@ -11,7 +11,7 @@
 		private $ElevesIds;
 		private $pdoGlpi;
 		private $content = 	[
-			'TITLE' => "Accueil Glpi",
+			'TITLE' => "Glpi",
 			'CONTENT'   => "Glpi ?",
 		];
 		private $tablesGlpi = [
@@ -26,8 +26,8 @@
 			"realname" => 'realname',
 			"firstname" => 'firstname',
 			"is_active" => 'is_active',
-			"comment" => 'comment',
-			"entities_id" => 'entities_id',
+			// "comment" => 'comment',
+			// "entities_id" => 'entities_id',
 			"user_dn" => 'user_dn'
 		];
 		// computers : id 	entities_id 	name 	serial 	otherserial 	contact 	contact_num 	users_id_tech  groups_id_tech 	comment 	date_mod 	autoupdatesystems_id 	locations_id 	networks_id 	computermodels_id computertypes_id 	is_template 	template_name 	manufacturers_id 	is_deleted 	is_dynamic 	users_id 	groups_id states_id 	ticket_tco 	uuid 	date_creation 	is_recursive 	last_inventory_update 	last_boot
@@ -37,11 +37,11 @@
 			"serial" => 'serial',
 			"otherserial" => 'otherserial',
 			// "contact" => 'contact',
-			"comment" => 'comment',
+			// "comment" => 'comment',
 			// "computermodels_id" => 'computermodels_id',
 			// "computertypes_id" => 'computertypes_id',
 			"states_id" => 'states_id',
-			"date_creation" => 'date_creation'
+			// "date_creation" => 'date_creation'
 		];
 		public function __construct($CheckDb) {
 			$this->pdfAuth = (isset($_SESSION['user']) && isset($_SESSION['user']['typeaccount_id']) && (int)$_SESSION['user']['typeaccount_id']>=$this->lvAuth );
@@ -144,11 +144,7 @@
 		private function getList($title, $table, $theaders=false, $rows=[], $categorie) {
 
 
-
-
-
-
-			$html = file_get_contents('../app/views/listesGlpi.php');
+			$html = file_get_contents('../app/views/glpipc/listesGlpi.php');
 			$content = '';
 
 			foreach ($rows as $item) {
@@ -184,7 +180,7 @@
 				$content .= "</tr>";
 			}
 			
-            $html = str_replace('#PAGETITLE#', $title, $html);
+            $html = str_replace('{{PAGETITLE}}', $title, $html);
             $html = str_replace('{{TITLES}}', $theaders, $html);
             $html = str_replace('{{CONTENT}}', $content, $html);
 

@@ -6,12 +6,36 @@ class Navigation
 	private $pageToDisplay;
 	private $navigation ='';
 	private $menus;
+	private $menus2;
 	private $url;
 	private $view = '
 	<nav class="nav-top">
 		<div class="nav-top-brand"><img src="/img/assets.png" alt="AssetsTracker Logo"></div>
 		<ul class="nav-top-ul">
 			{{topnav}}
+		</ul>
+	</nav>';
+	private $view2 = '
+	<nav class="topnav">
+		<ul>
+			<li class="ico">
+				<image class="svg" width="20px" height="20px" src="computer.svg">
+			</li>
+			{{topnav}}
+			<li>Edit
+				<ul>
+					<li>File</li>
+					<li>Edit</li>
+					<li>Selection</li>
+				</ul>
+			</li>
+			<li>Selection
+				<ul>
+					<li>File</li>
+					<li>Edit</li>
+					<li>Selection</li>
+				</ul>
+			</li>
 		</ul>
 	</nav>';
 
@@ -161,7 +185,7 @@ class Navigation
 
 		$this->view = str_replace(search: "{{topnav}}",replace: $this->navigation,subject: $this->view);
 
-		$this->pageToDisplay = str_replace(search: "{{topNavView}}",replace: $this->view, subject: $this->pageToDisplay);
+		$this->pageToDisplay = str_replace(search: "{{topNavViewA}}",replace: $this->view, subject: $this->pageToDisplay);
 		return $this->pageToDisplay;
 	}
 	private function getI($index,$key)

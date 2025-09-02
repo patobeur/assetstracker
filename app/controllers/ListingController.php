@@ -43,7 +43,7 @@
 					"ID" => 'id',
 					"barrecode" => 'barrecode',
 					"Modèle" => 'model',
-					"Numéro de Série" => 'serialnum',
+					// "Numéro de Série" => 'serialnum',
 					"État" => 'etat',
 					"Entrée" => 'birth',
 					"Position" => 'position',

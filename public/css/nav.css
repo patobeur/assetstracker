@@ -113,7 +113,6 @@
 		transition: left 1s ease;
 	}
 }
-
 @media (max-width: 1300px) {
     .nav-top {
 		.nav-top-ul {

@@ -181,7 +181,7 @@
 		// Afficher la vue login avec les erreurs
 		private function renderView($errors = []) {
 			$html = file_get_contents('../app/views/login.php');
-			$htmlform = file_get_contents('../app/views/loginForm.php');
+			$htmlform = file_get_contents('../app/views/login/loginForm.php');
 	
 			// Ajouter les erreurs
 			$errorHtml = '';

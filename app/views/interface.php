@@ -51,6 +51,13 @@
             <!-- <label for="notifications">Notifications</label> -->
             <span>Activer la console : </span><input type="checkbox" id="notifications">
         </div>
+        <div class="form-group">
+            <label for="navigation">Navigation</label>
+            <select id="navigation">
+                <option value="1">un</option>
+                <option value="2">deux</option>
+            </select>
+        </div>
     </div>
 
 
@@ -59,6 +66,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             const theme = localStorage.getItem('theme');
             if (theme) document.getElementById('theme').value = theme;
+
+            const navigation = localStorage.getItem('navigation');
+            if (navigation) document.getElementById('navigation').value = theme;
 
             // const username = localStorage.getItem('username');
             // if (username) document.getElementById('username').value = username;
@@ -97,6 +107,10 @@
         // Écouter les changements pour chaque champ
         document.getElementById('theme').addEventListener('change', (e) => {
             updateLocalStorage('theme', e.target.value);
+            applyDarkTheme(e.target.value);
+        });
+        document.getElementById('navigation').addEventListener('change', (e) => {
+            updateLocalStorage('navigation', e.target.value);
             applyDarkTheme(e.target.value);
         });
 

@@ -13,10 +13,10 @@ Gestion d'entrées et de sorties materiel avec codebarres.
         # Spécifie le répertoire racine du site Web pour cet hôte.
         # Ce répertoire contient les fichiers servis par Apache lorsqu’un utilisateur accède au site 
         # (dans ce cas : C:/sitesweb/TimePoint-Asset-Tracker/public).
-        ServerName votredomaine.lan
+        ServerName gestionaccueil_dev.pedagogie.lan
         # Définit le nom du serveur pour cet hôte virtuel.
         # Correspond au domaine ou au sous-domaine que les utilisateurs taperont dans leur navigateur
-        # (ici : votredomaine.lan).
+        # (ici : gestionaccueil_dev.pedagogie.lan).
             <Directory "C:/sitesweb/TimePoint-Asset-Tracker/public">
                 # Définit la priorité d’évaluation des règles d'accès.
                 # Ici, on autorise d'abord (allow) avant de refuser (deny).
@@ -53,14 +53,14 @@ dans /public/index.php, créez une route vers la page
 
     $router->add(
         'nomUrl',
-        'nomFichier@nomPublicFonction@null@0'
+        'nomFichier@nomPublicFonction@null@0@null'
     );
 
 si besoin de la DB
 
 	$router->add(
         'interface',
-        'InterfaceController@interfaceHandler@**db**@0'
+        'InterfaceController@interfaceHandler@**db**@0@null'
     );
 
 fixer un niveau d'accreditation
@@ -68,7 +68,7 @@ le niveau d'admin va de 1 à 3 pour l'instant.
 
 	$router->add(
         'interface',
-        'InterfaceController@interfaceHandler@null@**1 à 3**'
+        'InterfaceController@interfaceHandler@null@**1 à 3**@null'
     );
 
 dans le dossier /app/controllers/
@@ -83,15 +83,16 @@ ajouter une vue dans /app/views/
 
 ajouter un menu suplémentaire dans la page nagigation.php
 on continu avec le meme nomUrl qui est interface
-
+    
     'interface'=> [
-        'type'=> 'a', // tag de la balise crée
-        'url'=> 'interface', // nom utilisé pour les url et les GET
-        'ico'=> 'interface', // nom utilisé les icones
-        'content'=> 'Interface', // textContent
-        'hiddenIfUrl'=> false, // disparait si on est sur la page
-        'href'=> '/interface', // url à utiliser comme lien
-        'class'=> 'interface', // class de la balise crée
-        'needLog'=> true, // doit etre connecté
-        'lv'=> 1, // niveau requis
+        'ico'=>'interface',
+        'tag'=> 'a',
+        'url'=> 'interface',
+        'content'=> 'Options',
+        'hiddenIfUrl'=> false,
+        'href'=> '/interface',
+        'class'=> 'interface',
+        'needLog'=> true,
+        'lv'=> (int)(1),
+        'classHideContent'=>true,
     ],
