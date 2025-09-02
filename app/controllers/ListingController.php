@@ -66,11 +66,11 @@
 			else {
 				$content = '';
 				foreach ($items as $item) {
-						$content .= '<tr id="row_'.$item['id'].'">';
+						$content .= '<tr id="row_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'">';
 						foreach ($item as $value) {
-							$content .= "<td>".($value??'<em class="null">null</em>')."</td>";
+							$content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
 						}
-						if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.$item['id'].'" name="item_'.$item['id'].'" checked /></td>';
+						if ($this->pdfAuth) $content .= '<td class="check"><input type="checkbox" id="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" name="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" checked /></td>';
 					$content .= "</tr>";
 				}
 				
@@ -144,14 +144,14 @@
 
 			$items = $this->getRowsFrom('eleves',implode(",", $sqlList));
 
-			$content = '';			
+			$content = '';
 			foreach ($items as $item) {
-					$content .= "<tr>";
-					$content .= '<td><input type="checkbox" id="item_'.$item['id'].'" name="item_'.$item['id'].'" /></td>';
-					foreach ($item as $value) {
-						$content .= "<td>".($value??'<em class="null">null</em>')."</td>";
-					}
-					$content .= '<td><a href="/eleve?num='.$item['id'].'">ref: '.$item['id'].'</a></td>';
+				$content .= "<tr>";
+				$content .= '<td><input type="checkbox" id="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" name="item_'.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'" /></td>';
+				foreach ($item as $value) {
+					$content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class=\"null\">null</em>')."</td>";
+				}
+				$content .= '<td><a href="/eleve?num='.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'">ref: '.htmlspecialchars($item['id'], ENT_QUOTES, 'UTF-8').'</a></td>';
 				$content .= "</tr>";
 			}
 			
@@ -194,7 +194,7 @@
 			foreach ($items as $item) {
 					$content .= "<tr>";
 					foreach ($item as $value) {
-						$content .= "<td>".$value."</td>";
+						$content .= "<td>".($value!==null ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '<em class="null">null</em>')."</td>";
 					}
 				$content .= "</tr>";
 			}
